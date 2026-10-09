@@ -159,3 +159,111 @@ describe("Phase 4 Admin Validators", () => {
     expect(msgStatus.success).toBe(true);
   });
 });
+
+describe("Phase 5 Projects & Studio Validators", () => {
+  it("validates project schema with hex tile size and metrics", async () => {
+    const { projectSchema } = await import("./projects");
+
+    const validProject = {
+      slug: "hive-portfolio",
+      title: "The Hive Portfolio",
+      summary: "Hexagon-native CMS and portfolio platform.",
+      role: "Lead Architect",
+      year: "2026",
+      client: "Personal",
+      status: "in_progress" as const,
+      category: "web" as const,
+      tileSize: "XL" as const,
+      featured: true,
+      confidential: false,
+      order: 1,
+      coverMedia: {
+        publicId: "portfolio/hive-cover",
+        url: "https://example.com/cover.jpg",
+        width: 1200,
+        height: 800,
+        format: "jpg",
+      },
+      problem: "Standard layouts fail to convey architectural structure.",
+      approach: "Engineered pointy-top hex coordinate math and CMS.",
+      result: "High-performance responsive site.",
+      metrics: [{ label: "Lighthouse", value: "98" }],
+      published: true,
+      stack: ["Next.js", "TypeScript", "Drizzle"],
+    };
+
+    const res = projectSchema.safeParse(validProject);
+    expect(res.success).toBe(true);
+
+    // Invalid slug with uppercase or spaces
+    const invalidSlug = projectSchema.safeParse({
+      ...validProject,
+      slug: "Invalid Slug",
+    });
+    expect(invalidSlug.success).toBe(false);
+  });
+
+  it("validates studio item, category, collection, and bulk schemas", async () => {
+    const {
+      studioCategorySchema,
+      studioCollectionSchema,
+      studioItemSchema,
+      studioBulkItemSchema,
+    } = await import("./studio");
+
+    const catRes = studioCategorySchema.safeParse({
+      name: "Rollup Banners",
+      slug: "rollup-banners",
+      order: 1,
+      published: true,
+    });
+    expect(catRes.success).toBe(true);
+
+    const colRes = studioCollectionSchema.safeParse({
+      title: "Event Season 2025",
+      slug: "event-season-2025",
+      description: "Complete festival assets",
+      order: 1,
+      published: true,
+    });
+    expect(colRes.success).toBe(true);
+
+    const itemRes = studioItemSchema.safeParse({
+      title: "Music Fest Rollup Banner",
+      categoryId: 1,
+      collectionId: 1,
+      mediaType: "image" as const,
+      mediaUrl: "portfolio/banner-01",
+      cloudinaryId: "portfolio/banner-01",
+      width: 400,
+      height: 1200,
+      ratio: "1:3",
+      specLabel: "Rollup Banner / 85x200cm",
+      year: "2025",
+      confidential: false,
+      order: 1,
+      published: true,
+    });
+    expect(itemRes.success).toBe(true);
+
+    const bulkRes = studioBulkItemSchema.safeParse({
+      items: [
+        {
+          title: "Artwork 1",
+          categoryId: 1,
+          mediaType: "image" as const,
+          mediaUrl: "url-1",
+          cloudinaryId: "id-1",
+          width: 800,
+          height: 600,
+          ratio: "4:3",
+          specLabel: "Flier / A5",
+          year: "2025",
+          confidential: false,
+        },
+      ],
+    });
+    expect(bulkRes.success).toBe(true);
+  });
+});
+

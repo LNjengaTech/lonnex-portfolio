@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 5
+**Current phase:** 6
 
 ## Phases
 - [x] 0 Foundation
@@ -8,7 +8,7 @@
 - [x] 2 Data and auth
 - [x] 3 Media pipeline
 - [x] 4 Admin: settings, profile, now, skills, services, experience, contacts, testimonials
-- [ ] 5 Admin: projects + studio
+- [x] 5 Admin: projects + studio
 - [ ] 6 Admin: journal
 - [ ] 7 Public shell and Hive home
 - [ ] 8a Public: Work
@@ -39,7 +39,11 @@
 - 2026-10-09: Built HexPhotoPreview featuring pointy-top geometry with layered brand offset wireframes, zoom, and panning controls.
 - 2026-10-09: Created reusable SortableListItem with HTML5 drag-and-drop reordering, keyboard up/down controls, and published toggles.
 - 2026-10-09: Established complete Zod validation schemas in lib/validators, query library in lib/db/queries, and server actions with requireAuth and audit logging.
+- 2026-10-09: Built Projects admin module with tile size (S/M/L/XL), featured status, confidential/blurred mode, video preview swap, metrics, stack tags, and live pointy-top HexTilePreview.
+- 2026-10-09: Built Studio admin module with 3-tab layout (Wall, Bulk Ingest, Categories/Collections), automatic aspect ratio detection (1:3, 4:3, 16:9, 1:1, 9:16), bulk category assignment, and bulk deletion.
+- 2026-10-09: Seeded 5 realistic code projects and 15 mixed-ratio commercial studio items (portrait, landscape, square, vertical, video).
 
 ## Open issues
 - SVG logo mark is an architectural placeholder; replace with finalized brand vector when ready.
 - Node and npm commands run on host system by user.
+- Cloudinary console: user must re-enable uploads / verify account email for `ducayuasy` (API ping/read works, uploads returned 401 action disabled).

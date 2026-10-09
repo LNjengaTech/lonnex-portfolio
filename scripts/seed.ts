@@ -94,95 +94,113 @@ async function seed() {
     .onConflictDoNothing({ target: schema.availability.id });
 
   // 5. Now Project & Build Log
-  const [createdProject] = await db
-    .insert(schema.nowProject)
-    .values({
-      title: "[Placeholder] The Hive Portfolio Engine",
-      description:
-        "[Placeholder] Constructing a custom hexagon-native portfolio with full CMS control and media pipeline.",
-      progress: 75,
-      stack: ["Next.js", "TypeScript", "Drizzle", "PostgreSQL", "Tailwind"],
-      status: "in_progress",
-    })
-    .returning();
+  const existingNow = await db.select().from(schema.nowProject).limit(1);
+  if (existingNow.length === 0) {
+    const [createdProject] = await db
+      .insert(schema.nowProject)
+      .values({
+        title: "[Placeholder] The Hive Portfolio Engine",
+        description:
+          "[Placeholder] Constructing a custom hexagon-native portfolio with full CMS control and media pipeline.",
+        progress: 75,
+        stack: ["Next.js", "TypeScript", "Drizzle", "PostgreSQL", "Tailwind"],
+        status: "in_progress",
+      })
+      .returning();
 
-  if (createdProject) {
-    await db.insert(schema.buildLogEntries).values([
+    if (createdProject) {
+      await db.insert(schema.buildLogEntries).values([
+        {
+          projectId: createdProject.id,
+          title: "[Placeholder] Hex coordinate system and layout packer",
+          content:
+            "Engineered axial-to-pixel conversions and non-overlapping honeycomb layout packing logic for mixed hex tiles.",
+          order: 1,
+          published: true,
+        },
+        {
+          projectId: createdProject.id,
+          title: "[Placeholder] Database schema and single-admin auth",
+          content:
+            "Established PostgreSQL schema via Drizzle and implemented secure session cookies and audit logging.",
+          order: 2,
+          published: true,
+        },
+      ]);
+    }
+    console.log("[Seed] Now project and build log entries seeded.");
+  }
+
+  // 6. Skill Categories & Skills
+  const existingCats = await db.select().from(schema.skillCategories).limit(1);
+  if (existingCats.length === 0) {
+    const [catWeb] = await db
+      .insert(schema.skillCategories)
+      .values({ name: "Web & Full-Stack", icon: "Globe", order: 1, published: true })
+      .returning();
+
+    const [catDesign] = await db
+      .insert(schema.skillCategories)
+      .values({ name: "Commercial Design", icon: "Palette", order: 2, published: true })
+      .returning();
+
+    if (catWeb && catDesign) {
+      await db.insert(schema.skills).values([
+        { categoryId: catWeb.id, name: "Next.js & React", icon: "Code2", tier: "primary", years: 4, order: 1, published: true },
+        { categoryId: catWeb.id, name: "TypeScript", icon: "FileCode", tier: "primary", years: 4, order: 2, published: true },
+        { categoryId: catWeb.id, name: "PostgreSQL & Drizzle", icon: "Database", tier: "primary", years: 3, order: 3, published: true },
+        { categoryId: catDesign.id, name: "Figma & Vector Design", icon: "PenTool", tier: "primary", years: 5, order: 1, published: true },
+        { categoryId: catDesign.id, name: "Commercial Fliers & Banners", icon: "Image", tier: "primary", years: 5, order: 2, published: true },
+      ]);
+    }
+    console.log("[Seed] Skill categories and skills seeded.");
+  }
+
+  // 7. Services
+  const existingServices = await db.select().from(schema.services).limit(1);
+  if (existingServices.length === 0) {
+    await db.insert(schema.services).values([
       {
-        projectId: createdProject.id,
-        title: "[Placeholder] Hex coordinate system and layout packer",
-        content:
-          "Engineered axial-to-pixel conversions and non-overlapping honeycomb layout packing logic for mixed hex tiles.",
+        title: "Full-Stack Web Development",
+        description:
+          "[Placeholder] Modern Next.js applications, performant APIs, responsive UI systems, and PostgreSQL architectures.",
+        deliverables: ["Full application source", "Automated deployment", "Admin CMS", "Documentation"],
+        priceFrom: "$1,500",
+        timeline: "2-4 weeks",
+        icon: "Code2",
         order: 1,
         published: true,
       },
       {
-        projectId: createdProject.id,
-        title: "[Placeholder] Database schema and single-admin auth",
-        content:
-          "Established PostgreSQL schema via Drizzle and implemented secure session cookies and audit logging.",
+        title: "Commercial Graphic Design",
+        description:
+          "[Placeholder] High-conversion marketing banners, event fliers, business stationery, and social media brand packs.",
+        deliverables: ["Print-ready vectors", "Web-optimized exports", "Source files", "Social variants"],
+        priceFrom: "$300",
+        timeline: "3-7 days",
+        icon: "Palette",
         order: 2,
         published: true,
       },
     ]);
+    console.log("[Seed] Services seeded.");
   }
-
-  // 6. Skill Categories & Skills
-  const [catWeb] = await db
-    .insert(schema.skillCategories)
-    .values({ name: "Web & Full-Stack", icon: "Globe", order: 1, published: true })
-    .returning();
-
-  const [catDesign] = await db
-    .insert(schema.skillCategories)
-    .values({ name: "Commercial Design", icon: "Palette", order: 2, published: true })
-    .returning();
-
-  if (catWeb && catDesign) {
-    await db.insert(schema.skills).values([
-      { categoryId: catWeb.id, name: "Next.js & React", icon: "Code2", tier: "primary", years: 4, order: 1, published: true },
-      { categoryId: catWeb.id, name: "TypeScript", icon: "FileCode", tier: "primary", years: 4, order: 2, published: true },
-      { categoryId: catWeb.id, name: "PostgreSQL & Drizzle", icon: "Database", tier: "primary", years: 3, order: 3, published: true },
-      { categoryId: catDesign.id, name: "Figma & Vector Design", icon: "PenTool", tier: "primary", years: 5, order: 1, published: true },
-      { categoryId: catDesign.id, name: "Commercial Fliers & Banners", icon: "Image", tier: "primary", years: 5, order: 2, published: true },
-    ]);
-  }
-
-  // 7. Services
-  await db.insert(schema.services).values([
-    {
-      title: "Full-Stack Web Development",
-      description:
-        "[Placeholder] Modern Next.js applications, performant APIs, responsive UI systems, and PostgreSQL architectures.",
-      deliverables: ["Full application source", "Automated deployment", "Admin CMS", "Documentation"],
-      priceFrom: "$1,500",
-      timeline: "2-4 weeks",
-      icon: "Code2",
-      order: 1,
-      published: true,
-    },
-    {
-      title: "Commercial Graphic Design",
-      description:
-        "[Placeholder] High-conversion marketing banners, event fliers, business stationery, and social media brand packs.",
-      deliverables: ["Print-ready vectors", "Web-optimized exports", "Source files", "Social variants"],
-      priceFrom: "$300",
-      timeline: "3-7 days",
-      icon: "Palette",
-      order: 2,
-      published: true,
-    },
-  ]);
 
   // 8. Contact Methods
-  await db.insert(schema.contactMethods).values([
-    { type: "email", label: "Email", value: "hello@lonnex.dev", icon: "Mail", order: 1, visible: true },
-    { type: "github", label: "GitHub", value: "https://github.com/lonnex", icon: "Github", order: 2, visible: true },
-    { type: "linkedin", label: "LinkedIn", value: "https://linkedin.com/in/lonnex", icon: "Linkedin", order: 3, visible: true },
-  ]);
+  const existingContacts = await db.select().from(schema.contactMethods).limit(1);
+  if (existingContacts.length === 0) {
+    await db.insert(schema.contactMethods).values([
+      { type: "email", label: "Email", value: "hello@lonnex.dev", icon: "Mail", order: 1, visible: true },
+      { type: "github", label: "GitHub", value: "https://github.com/lonnex", icon: "Github", order: 2, visible: true },
+      { type: "linkedin", label: "LinkedIn", value: "https://linkedin.com/in/lonnex", icon: "Linkedin", order: 3, visible: true },
+    ]);
+    console.log("[Seed] Contact methods seeded.");
+  }
 
   // 9. Projects
-  const projectRows = await db
+  const existingProjects = await db.select().from(schema.projects).limit(1);
+  if (existingProjects.length === 0) {
+    const projectRows = await db
     .insert(schema.projects)
     .values([
       {
@@ -318,178 +336,186 @@ async function seed() {
       { projectId: projectRows[4].id, name: "PostgreSQL", order: 3 },
       { projectId: projectRows[4].id, name: "PWA", order: 4 },
     ]);
+    console.log("[Seed] Projects and stack tags seeded.");
   }
-  console.log("[Seed] Projects and stack tags seeded.");
 
   // 10. Studio Categories & Collections
-  const [catBanners, catFliers, catCards, catVideo, catBrand] = await db
-    .insert(schema.studioCategories)
-    .values([
-      { name: "Rollup Banners", slug: "rollup-banners", order: 1, published: true },
-      { name: "Fliers & Posters", slug: "fliers-posters", order: 2, published: true },
-      { name: "Business Cards", slug: "business-cards", order: 3, published: true },
-      { name: "Video Ads", slug: "video-ads", order: 4, published: true },
-      { name: "Brand Identity", slug: "brand-identity", order: 5, published: true },
-    ])
-    .returning();
+  const existingStudio = await db.select().from(schema.studioCategories).limit(1);
+  if (existingStudio.length === 0) {
+    const [catBanners, catFliers, catCards, catVideo, catBrand] = await db
+      .insert(schema.studioCategories)
+      .values([
+        { name: "Rollup Banners", slug: "rollup-banners", order: 1, published: true },
+        { name: "Fliers & Posters", slug: "fliers-posters", order: 2, published: true },
+        { name: "Business Cards", slug: "business-cards", order: 3, published: true },
+        { name: "Video Ads", slug: "video-ads", order: 4, published: true },
+        { name: "Brand Identity", slug: "brand-identity", order: 5, published: true },
+      ])
+      .returning();
 
-  const [colEventSeason, colCorporate] = await db
-    .insert(schema.studioCollections)
-    .values([
-      { title: "Event Season 2025", slug: "event-season-2025", description: "[Placeholder] Complete marketing package for Q3/Q4 event season.", order: 1, published: true },
-      { title: "Corporate Pack", slug: "corporate-pack", description: "[Placeholder] Unified corporate identity materials.", order: 2, published: true },
-    ])
-    .returning();
+    const [colEventSeason, colCorporate] = await db
+      .insert(schema.studioCollections)
+      .values([
+        { title: "Event Season 2025", slug: "event-season-2025", description: "[Placeholder] Complete marketing package for Q3/Q4 event season.", order: 1, published: true },
+        { title: "Corporate Pack", slug: "corporate-pack", description: "[Placeholder] Unified corporate identity materials.", order: 2, published: true },
+      ])
+      .returning();
 
-  if (catBanners && catFliers && catCards && catVideo && catBrand && colEventSeason && colCorporate) {
-    // 15 studio items — mixed ratios: portrait, landscape, square, vertical, ultrawide
-    await db.insert(schema.studioItems).values([
-      // Rollup Banners — portrait 1:3
-      { title: "[Placeholder] NBO Music Fest Rollup", categoryId: catBanners.id, collectionId: colEventSeason.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&h=1200&q=80", cloudinaryId: "placeholder/banner-01", width: 400, height: 1200, ratio: "1:3", specLabel: "Rollup Banner / 85×200 cm", year: "2025", order: 1, published: true },
-      { title: "[Placeholder] Tech Summit 2025 Rollup", categoryId: catBanners.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=1200&q=80", cloudinaryId: "placeholder/banner-02", width: 400, height: 1200, ratio: "1:3", specLabel: "Rollup Banner / 85×200 cm", year: "2025", order: 2, published: true },
-      { title: "[Placeholder] Brand Launch Rollup", categoryId: catBanners.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=400&h=1200&q=80", cloudinaryId: "placeholder/banner-03", width: 400, height: 1200, ratio: "1:3", specLabel: "Rollup Banner / 60×160 cm", year: "2024", order: 3, published: true },
-      // Fliers — 4:3 landscape
-      { title: "[Placeholder] Afro Night Flier", categoryId: catFliers.id, collectionId: colEventSeason.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&h=600&q=80", cloudinaryId: "placeholder/flier-01", width: 800, height: 600, ratio: "4:3", specLabel: "A5 Flier / 148×210 mm", year: "2025", order: 1, published: true },
-      { title: "[Placeholder] Corporate Gala Invitation", categoryId: catFliers.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&h=600&q=80", cloudinaryId: "placeholder/flier-02", width: 800, height: 600, ratio: "4:3", specLabel: "A5 Flier / 148×210 mm", year: "2025", order: 2, published: true },
-      // Social media — 9:16 vertical
-      { title: "[Placeholder] IG Story — Event Countdown", categoryId: catFliers.id, collectionId: colEventSeason.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?auto=format&fit=crop&w=540&h=960&q=80", cloudinaryId: "placeholder/social-01", width: 540, height: 960, ratio: "9:16", specLabel: "IG Story / 1080×1920 px", year: "2025", order: 3, published: true },
-      { title: "[Placeholder] IG Story — Brand Launch", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=540&h=960&q=80", cloudinaryId: "placeholder/social-02", width: 540, height: 960, ratio: "9:16", specLabel: "IG Story / 1080×1920 px", year: "2024", order: 1, published: true },
-      // Business Cards — 16:9 landscape (standard card ratio)
-      { title: "[Placeholder] EventsNBO Business Card", categoryId: catCards.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1606636660488-16a8646f012c?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/card-01", width: 800, height: 450, ratio: "16:9", specLabel: "Business Card / 90×50 mm (landscape)", year: "2025", order: 1, published: true },
-      { title: "[Placeholder] Lonnex Dev Card (Front)", categoryId: catCards.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1572021335469-31706a17aaef?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/card-02", width: 800, height: 450, ratio: "16:9", specLabel: "Business Card / 90×50 mm (landscape)", year: "2025", order: 2, published: true },
-      { title: "[Placeholder] Lonnex Dev Card (Back)", categoryId: catCards.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1583912086096-8c60d75a53f9?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/card-03", width: 800, height: 450, ratio: "16:9", specLabel: "Business Card / 90×50 mm (landscape)", year: "2025", order: 3, published: true },
-      // Video Ads — 16:9
-      { title: "[Placeholder] Product Reveal 15s Ad", categoryId: catVideo.id, collectionId: colEventSeason.id, mediaType: "video", mediaUrl: "https://images.unsplash.com/photo-1536240478700-b869ad10e2ab?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/video-01", width: 1920, height: 1080, ratio: "16:9", specLabel: "Video Ad / 1920×1080 / 15s", year: "2025", order: 1, published: true },
-      { title: "[Placeholder] Brand Story 30s Ad", categoryId: catVideo.id, mediaType: "video", mediaUrl: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/video-02", width: 1920, height: 1080, ratio: "16:9", specLabel: "Video Ad / 1920×1080 / 30s", year: "2024", confidential: true, order: 2, published: true },
-      // Brand Identity — square 1:1
-      { title: "[Placeholder] HiveLink Logo Suite", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-01", width: 800, height: 800, ratio: "1:1", specLabel: "Logo Suite / SVG + PNG export pack", year: "2025", order: 2, published: true },
-      { title: "[Placeholder] EventsNBO Brand Guidelines", categoryId: catBrand.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-02", width: 800, height: 800, ratio: "1:1", specLabel: "Brand Book / A4 PDF, 24 pages", year: "2025", order: 3, published: true },
-      { title: "[Placeholder] DataCore Dashboard Icon Set", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1558655146-364adaf1fcc9?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-03", width: 800, height: 800, ratio: "1:1", specLabel: "Icon Set / 48 SVG icons", year: "2024", confidential: true, order: 4, published: true },
-    ]);
+    if (catBanners && catFliers && catCards && catVideo && catBrand && colEventSeason && colCorporate) {
+      // 15 studio items — mixed ratios: portrait, landscape, square, vertical, ultrawide
+      await db.insert(schema.studioItems).values([
+        // Rollup Banners — portrait 1:3
+        { title: "[Placeholder] NBO Music Fest Rollup", categoryId: catBanners.id, collectionId: colEventSeason.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&h=1200&q=80", cloudinaryId: "placeholder/banner-01", width: 400, height: 1200, ratio: "1:3", specLabel: "Rollup Banner / 85×200 cm", year: "2025", order: 1, published: true },
+        { title: "[Placeholder] Tech Summit 2025 Rollup", categoryId: catBanners.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=1200&q=80", cloudinaryId: "placeholder/banner-02", width: 400, height: 1200, ratio: "1:3", specLabel: "Rollup Banner / 85×200 cm", year: "2025", order: 2, published: true },
+        { title: "[Placeholder] Brand Launch Rollup", categoryId: catBanners.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=400&h=1200&q=80", cloudinaryId: "placeholder/banner-03", width: 400, height: 1200, ratio: "1:3", specLabel: "Rollup Banner / 60×160 cm", year: "2024", order: 3, published: true },
+        // Fliers — 4:3 landscape
+        { title: "[Placeholder] Afro Night Flier", categoryId: catFliers.id, collectionId: colEventSeason.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&h=600&q=80", cloudinaryId: "placeholder/flier-01", width: 800, height: 600, ratio: "4:3", specLabel: "A5 Flier / 148×210 mm", year: "2025", order: 1, published: true },
+        { title: "[Placeholder] Corporate Gala Invitation", categoryId: catFliers.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&h=600&q=80", cloudinaryId: "placeholder/flier-02", width: 800, height: 600, ratio: "4:3", specLabel: "A5 Flier / 148×210 mm", year: "2025", order: 2, published: true },
+        // Social media — 9:16 vertical
+        { title: "[Placeholder] IG Story — Event Countdown", categoryId: catFliers.id, collectionId: colEventSeason.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?auto=format&fit=crop&w=540&h=960&q=80", cloudinaryId: "placeholder/social-01", width: 540, height: 960, ratio: "9:16", specLabel: "IG Story / 1080×1920 px", year: "2025", order: 3, published: true },
+        { title: "[Placeholder] IG Story — Brand Launch", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=540&h=960&q=80", cloudinaryId: "placeholder/social-02", width: 540, height: 960, ratio: "9:16", specLabel: "IG Story / 1080×1920 px", year: "2024", order: 1, published: true },
+        // Business Cards — 16:9 landscape (standard card ratio)
+        { title: "[Placeholder] EventsNBO Business Card", categoryId: catCards.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1606636660488-16a8646f012c?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/card-01", width: 800, height: 450, ratio: "16:9", specLabel: "Business Card / 90×50 mm (landscape)", year: "2025", order: 1, published: true },
+        { title: "[Placeholder] Lonnex Dev Card (Front)", categoryId: catCards.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1572021335469-31706a17aaef?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/card-02", width: 800, height: 450, ratio: "16:9", specLabel: "Business Card / 90×50 mm (landscape)", year: "2025", order: 2, published: true },
+        { title: "[Placeholder] Lonnex Dev Card (Back)", categoryId: catCards.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1583912086096-8c60d75a53f9?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/card-03", width: 800, height: 450, ratio: "16:9", specLabel: "Business Card / 90×50 mm (landscape)", year: "2025", order: 3, published: true },
+        // Video Ads — 16:9
+        { title: "[Placeholder] Product Reveal 15s Ad", categoryId: catVideo.id, collectionId: colEventSeason.id, mediaType: "video", mediaUrl: "https://images.unsplash.com/photo-1536240478700-b869ad10e2ab?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/video-01", width: 1920, height: 1080, ratio: "16:9", specLabel: "Video Ad / 1920×1080 / 15s", year: "2025", order: 1, published: true },
+        { title: "[Placeholder] Brand Story 30s Ad", categoryId: catVideo.id, mediaType: "video", mediaUrl: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&h=450&q=80", cloudinaryId: "placeholder/video-02", width: 1920, height: 1080, ratio: "16:9", specLabel: "Video Ad / 1920×1080 / 30s", year: "2024", confidential: true, order: 2, published: true },
+        // Brand Identity — square 1:1
+        { title: "[Placeholder] HiveLink Logo Suite", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-01", width: 800, height: 800, ratio: "1:1", specLabel: "Logo Suite / SVG + PNG export pack", year: "2025", order: 2, published: true },
+        { title: "[Placeholder] EventsNBO Brand Guidelines", categoryId: catBrand.id, collectionId: colCorporate.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-02", width: 800, height: 800, ratio: "1:1", specLabel: "Brand Book / A4 PDF, 24 pages", year: "2025", order: 3, published: true },
+        { title: "[Placeholder] DataCore Dashboard Icon Set", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1558655146-364adaf1fcc9?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-03", width: 800, height: 800, ratio: "1:1", specLabel: "Icon Set / 48 SVG icons", year: "2024", confidential: true, order: 4, published: true },
+      ]);
+    }
+    console.log("[Seed] Studio categories, collections, and items seeded.");
   }
+
   // 11. Journal: Series, Tags, Articles
-  const [seriesHex, seriesDesign] = await db
-    .insert(schema.series)
-    .values([
-      {
-        title: "Hexagonal Architecture & The Hive",
-        slug: "hexagonal-architecture",
-        description: "[Placeholder] Deep dives into non-overlapping coordinate grids, pointy-top axial math, and spatial UX.",
-        order: 1,
-      },
-      {
-        title: "Modern Full-Stack Systems",
-        slug: "modern-full-stack",
-        description: "[Placeholder] Architectural patterns for Next.js, PostgreSQL, and scalable CMS design.",
-        order: 2,
-      },
-    ])
-    .returning();
-
-  const [tagArch, tagTs, tagNext, tagDesign] = await db
-    .insert(schema.tags)
-    .values([
-      { name: "Architecture", slug: "architecture" },
-      { name: "TypeScript", slug: "typescript" },
-      { name: "Next.js", slug: "nextjs" },
-      { name: "Design", slug: "design" },
-    ])
-    .returning();
-
-  if (seriesHex && seriesDesign && tagArch && tagTs && tagNext && tagDesign) {
-    const [art1, art2] = await db
-      .insert(schema.articles)
+  const existingSeries = await db.select().from(schema.series).limit(1);
+  if (existingSeries.length === 0) {
+    const [seriesHex, seriesDesign] = await db
+      .insert(schema.series)
       .values([
         {
-          title: "Engineering Pointy-Top Hexagonal Grids in TypeScript",
-          slug: "engineering-pointy-top-hexagonal-grids",
-          excerpt:
-            "A technical breakdown of axial coordinate mathematics, distance metrics, and non-overlapping honeycomb packing for reactive canvas layouts.",
-          contentJson: {
-            type: "doc",
-            content: [
-              {
-                type: "heading",
-                attrs: { level: 2 },
-                content: [{ type: "text", text: "1. The Geometry of Pointy-Top Hexagons" }],
-              },
-              {
-                type: "paragraph",
-                content: [
-                  {
-                    type: "text",
-                    text: "Unlike standard square grids, a regular pointy-top hexagon introduces 60-degree radial symmetry. Using axial coordinates (q, r), distance and neighbor navigation become linear matrix transformations.",
-                  },
-                ],
-              },
-              {
-                type: "blockquote",
-                content: [
-                  {
-                    type: "paragraph",
-                    text: "A hexagonal system offers uniform adjacent distance in all six directions, eliminating diagonal bias.",
-                  },
-                ],
-              },
-            ],
-          },
-          htmlCache: "<h2>1. The Geometry of Pointy-Top Hexagons</h2><p>Unlike standard square grids, a regular pointy-top hexagon introduces 60-degree radial symmetry. Using axial coordinates (q, r), distance and neighbor navigation become linear matrix transformations.</p><blockquote><p>A hexagonal system offers uniform adjacent distance in all six directions, eliminating diagonal bias.</p></blockquote>",
-          seriesId: seriesHex.id,
-          seriesPart: 1,
-          status: "published",
-          readingTime: 5,
-          seo: {
-            title: "Engineering Hexagonal Grids in TypeScript",
-            description: "Deep dive into axial coordinate mathematics and honeycomb packing.",
-          },
+          title: "Hexagonal Architecture & The Hive",
+          slug: "hexagonal-architecture",
+          description: "[Placeholder] Deep dives into non-overlapping coordinate grids, pointy-top axial math, and spatial UX.",
+          order: 1,
         },
         {
-          title: "High-Impact Commercial Vector Collateral: From Brand Kit to Print",
-          slug: "commercial-vector-collateral-print-guide",
-          excerpt:
-            "Best practices for designing large-format rollup banners, promotional fliers, and high-density business cards that translate flawlessly from screen to print.",
-          contentJson: {
-            type: "doc",
-            content: [
-              {
-                type: "heading",
-                attrs: { level: 2 },
-                content: [{ type: "text", text: "Precision Specifications for Physical Collateral" }],
-              },
-              {
-                type: "paragraph",
-                content: [
-                  {
-                    type: "text",
-                    text: "When delivering commercial graphic design, understanding mechanical print limitations—such as 3mm bleed margins, safe visual zones, and CMYK gamut boundaries—is just as vital as code quality.",
-                  },
-                ],
-              },
-            ],
-          },
-          htmlCache: "<h2>Precision Specifications for Physical Collateral</h2><p>When delivering commercial graphic design, understanding mechanical print limitations—such as 3mm bleed margins, safe visual zones, and CMYK gamut boundaries—is just as vital as code quality.</p>",
-          seriesId: seriesDesign.id,
-          seriesPart: 1,
-          status: "draft",
-          readingTime: 4,
-          seo: {
-            title: "Commercial Vector Collateral Print Guide",
-            description: "Designing rollup banners and fliers for large format print.",
-          },
+          title: "Modern Full-Stack Systems",
+          slug: "modern-full-stack",
+          description: "[Placeholder] Architectural patterns for Next.js, PostgreSQL, and scalable CMS design.",
+          order: 2,
         },
       ])
       .returning();
 
-    if (art1 && art2) {
-      await db.insert(schema.articleTags).values([
-        { articleId: art1.id, tagId: tagArch.id },
-        { articleId: art1.id, tagId: tagTs.id },
-        { articleId: art1.id, tagId: tagNext.id },
-        { articleId: art2.id, tagId: tagDesign.id },
-      ]);
+    const [tagArch, tagTs, tagNext, tagDesign] = await db
+      .insert(schema.tags)
+      .values([
+        { name: "Architecture", slug: "architecture" },
+        { name: "TypeScript", slug: "typescript" },
+        { name: "Next.js", slug: "nextjs" },
+        { name: "Design", slug: "design" },
+      ])
+      .returning();
+
+    if (seriesHex && seriesDesign && tagArch && tagTs && tagNext && tagDesign) {
+      const [art1, art2] = await db
+        .insert(schema.articles)
+        .values([
+          {
+            title: "Engineering Pointy-Top Hexagonal Grids in TypeScript",
+            slug: "engineering-pointy-top-hexagonal-grids",
+            excerpt:
+              "A technical breakdown of axial coordinate mathematics, distance metrics, and non-overlapping honeycomb packing for reactive canvas layouts.",
+            contentJson: {
+              type: "doc",
+              content: [
+                {
+                  type: "heading",
+                  attrs: { level: 2 },
+                  content: [{ type: "text", text: "1. The Geometry of Pointy-Top Hexagons" }],
+                },
+                {
+                  type: "paragraph",
+                  content: [
+                    {
+                      type: "text",
+                      text: "Unlike standard square grids, a regular pointy-top hexagon introduces 60-degree radial symmetry. Using axial coordinates (q, r), distance and neighbor navigation become linear matrix transformations.",
+                    },
+                  ],
+                },
+                {
+                  type: "blockquote",
+                  content: [
+                    {
+                      type: "paragraph",
+                      text: "A hexagonal system offers uniform adjacent distance in all six directions, eliminating diagonal bias.",
+                    },
+                  ],
+                },
+              ],
+            },
+            htmlCache: "<h2>1. The Geometry of Pointy-Top Hexagons</h2><p>Unlike standard square grids, a regular pointy-top hexagon introduces 60-degree radial symmetry. Using axial coordinates (q, r), distance and neighbor navigation become linear matrix transformations.</p><blockquote><p>A hexagonal system offers uniform adjacent distance in all six directions, eliminating diagonal bias.</p></blockquote>",
+            seriesId: seriesHex.id,
+            seriesPart: 1,
+            status: "published",
+            readingTime: 5,
+            seo: {
+              title: "Engineering Hexagonal Grids in TypeScript",
+              description: "Deep dive into axial coordinate mathematics and honeycomb packing.",
+            },
+          },
+          {
+            title: "High-Impact Commercial Vector Collateral: From Brand Kit to Print",
+            slug: "commercial-vector-collateral-print-guide",
+            excerpt:
+              "Best practices for designing large-format rollup banners, promotional fliers, and high-density business cards that translate flawlessly from screen to print.",
+            contentJson: {
+              type: "doc",
+              content: [
+                {
+                  type: "heading",
+                  attrs: { level: 2 },
+                  content: [{ type: "text", text: "Precision Specifications for Physical Collateral" }],
+                },
+                {
+                  type: "paragraph",
+                  content: [
+                    {
+                      type: "text",
+                      text: "When delivering commercial graphic design, understanding mechanical print limitations—such as 3mm bleed margins, safe visual zones, and CMYK gamut boundaries—is just as vital as code quality.",
+                    },
+                  ],
+                },
+              ],
+            },
+            htmlCache: "<h2>Precision Specifications for Physical Collateral</h2><p>When delivering commercial graphic design, understanding mechanical print limitations—such as 3mm bleed margins, safe visual zones, and CMYK gamut boundaries—is just as vital as code quality.</p>",
+            seriesId: seriesDesign.id,
+            seriesPart: 1,
+            status: "draft",
+            readingTime: 4,
+            seo: {
+              title: "Commercial Vector Collateral Print Guide",
+              description: "Designing rollup banners and fliers for large format print.",
+            },
+          },
+        ])
+        .returning();
+
+      if (art1 && art2) {
+        await db.insert(schema.articleTags).values([
+          { articleId: art1.id, tagId: tagArch.id },
+          { articleId: art1.id, tagId: tagTs.id },
+          { articleId: art1.id, tagId: tagNext.id },
+          { articleId: art2.id, tagId: tagDesign.id },
+        ]);
+      }
     }
+    console.log("[Seed] Journal series, tags, articles, and article-tags seeded.");
   }
-  console.log("[Seed] Journal series, tags, articles, and article-tags seeded.");
 
   console.log("Database seeded successfully with realistic placeholder content!");
   await client.end();

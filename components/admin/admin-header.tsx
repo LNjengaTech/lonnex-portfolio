@@ -2,19 +2,24 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Check, ChevronDown, ExternalLink, Loader2 } from "lucide-react";
+import { Check, ChevronDown, ExternalLink, Loader2, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/hex/theme-toggle";
 import { updateQuickAvailabilityAction } from "@/app/admin/(dashboard)/actions";
+import { HEX_CLIP_PATH } from "@/lib/hex";
 import { cn } from "@/lib/utils";
 
-interface AdminHeaderProps {
+export interface AdminHeaderProps {
   title?: string;
   availabilityStatus?: "available" | "limited" | "booked";
+  onToggleMobile?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export function AdminHeader({
   title = "Dashboard",
   availabilityStatus = "available",
+  onToggleMobile,
 }: AdminHeaderProps) {
   const [currentStatus, setCurrentStatus] = React.useState<
     "available" | "limited" | "booked"
@@ -78,18 +83,37 @@ export function AdminHeader({
   };
 
   return (
-    <header className="h-16 border-b border-border bg-surface px-6 flex items-center justify-between sticky top-0 z-30">
-      <div className="flex items-center gap-3">
-        <h1 className="text-base font-bold text-foreground tracking-tight">
-          {title}
-        </h1>
-        <span className="text-muted-foreground font-mono text-xs">/</span>
-        <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-          Admin
-        </span>
+    <header className="h-16 border-b border-border bg-surface px-3.5 sm:px-6 flex items-center justify-between sticky top-0 z-30 flex-shrink-0">
+      {/* Left side: Hamburger button (mobile) + Page Title */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        {/* Mobile Hamburger Toggle Button */}
+        {onToggleMobile && (
+          <button
+            type="button"
+            onClick={onToggleMobile}
+            className="flex md:hidden h-9 w-8 items-center justify-center bg-background border border-border text-foreground hover:border-primary transition-colors cursor-pointer flex-shrink-0"
+            style={{ clipPath: HEX_CLIP_PATH }}
+            aria-label="Toggle navigation menu"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+        )}
+
+        <div className="flex items-center gap-2 min-w-0">
+          <h1 className="text-sm sm:text-base font-bold text-foreground tracking-tight truncate">
+            {title}
+          </h1>
+          <span className="text-muted-foreground font-mono text-xs hidden sm:inline">
+            /
+          </span>
+          <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground hidden sm:inline">
+            Admin
+          </span>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      {/* Right side: Quick actions */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
         {/* Quick availability status toggle */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -97,7 +121,7 @@ export function AdminHeader({
             onClick={() => setIsOpen((prev) => !prev)}
             disabled={isPending}
             className={cn(
-              "flex items-center gap-2 border border-border px-3 py-1.5 text-xs font-mono uppercase bg-background hover:border-primary transition-colors cursor-pointer",
+              "flex items-center gap-1.5 sm:gap-2 border border-border px-2 sm:px-3 py-1.5 text-xs font-mono uppercase bg-background hover:border-primary transition-colors cursor-pointer",
               isPending && "opacity-70 cursor-wait"
             )}
             title="Click to toggle availability from anywhere"
@@ -107,12 +131,12 @@ export function AdminHeader({
             ) : (
               <span
                 className={cn(
-                  "inline-block h-2 w-2 rounded-full",
+                  "inline-block h-2 w-2 rounded-full flex-shrink-0",
                   statusConfig[currentStatus].dot
                 )}
               />
             )}
-            <span className="text-foreground font-bold">
+            <span className="text-foreground font-bold hidden sm:inline">
               {statusConfig[currentStatus].label}
             </span>
             <ChevronDown className="h-3 w-3 text-muted-foreground ml-0.5" />
@@ -158,10 +182,11 @@ export function AdminHeader({
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-1.5 font-mono text-xs uppercase text-muted-foreground hover:text-primary transition-colors border border-border px-2.5 py-1.5 bg-surface"
+          className="flex items-center gap-1.5 font-mono text-xs uppercase text-muted-foreground hover:text-primary transition-colors border border-border px-2 sm:px-2.5 py-1.5 bg-surface"
+          title="View public site in new tab"
         >
-          <span>View Site</span>
-          <ExternalLink className="h-3 w-3" />
+          <span className="hidden sm:inline">View Site</span>
+          <ExternalLink className="h-3.5 w-3.5" />
         </Link>
 
         {/* Theme toggle */}

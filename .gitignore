@@ -30,11 +30,6 @@ yarn-error.log*
 .env
 .env.example
 
-/.agents
-/docs
-/kit
-/scripts
-
 # vercel
 .vercel
 

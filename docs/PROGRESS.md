@@ -42,8 +42,13 @@
 - 2026-10-09: Built Projects admin module with tile size (S/M/L/XL), featured status, confidential/blurred mode, video preview swap, metrics, stack tags, and live pointy-top HexTilePreview.
 - 2026-10-09: Built Studio admin module with 3-tab layout (Wall, Bulk Ingest, Categories/Collections), automatic aspect ratio detection (1:3, 4:3, 16:9, 1:1, 9:16), bulk category assignment, and bulk deletion.
 - 2026-10-09: Seeded 5 realistic code projects and 15 mixed-ratio commercial studio items (portrait, landscape, square, vertical, video).
+- 2026-10-09: Added resolveMediaUrl() helper in lib/cloudinary-utils.ts to convert bare Cloudinary publicIds to absolute URLs, preventing relative-path 404s across all admin pickers.
+- 2026-10-09: CloudImage now uses unoptimized prop + ImageOff fallback for resilient rendering when Cloudinary CDN is unreachable.
+- 2026-10-09: Created lib/cache.ts wrapper for revalidateTag/revalidatePath with stable 1-arg signature across Next.js version changes.
+- 2026-10-09: Added export const dynamic = "force-dynamic" to admin (dashboard) layout to suppress static pre-render warnings at build time.
+- 2026-10-09: Build passes clean (0 TS errors, 0 lint errors). All admin routes correctly render as ƒ (Dynamic).
 
 ## Open issues
 - SVG logo mark is an architectural placeholder; replace with finalized brand vector when ready.
 - Node and npm commands run on host system by user.
-- Cloudinary console: user must re-enable uploads / verify account email for `ducayuasy` (API ping/read works, uploads returned 401 action disabled).
+- Cloudinary CDN delivery blocked at account level (x-cld-error: ACL deny) — user must visit https://cloudinary.com/console/ducayuasy → Settings → Security to re-enable delivery.

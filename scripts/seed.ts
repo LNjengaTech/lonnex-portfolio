@@ -338,6 +338,7 @@ async function seed() {
     ]);
     console.log("[Seed] Projects and stack tags seeded.");
   }
+  }
 
   // 10. Studio Categories & Collections
   const existingStudio = await db.select().from(schema.studioCategories).limit(1);

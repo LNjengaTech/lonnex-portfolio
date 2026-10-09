@@ -87,7 +87,7 @@ export default async function AdminAboutPage() {
         initialExperience={formattedExperience}
         initialServices={formattedServices}
         initialTestimonials={formattedTestimonials}
-        mediaAssets={mediaAssets}
+        mediaAssets={mediaAssets.map((a) => ({ ...a, type: a.type as "image" | "video" }))}
       />
     </div>
   );

@@ -2,7 +2,7 @@ import "dotenv/config";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import bcrypt from "bcryptjs";
-import * as schema from "../lib/db/schema.ts";
+import * as schema from "../lib/db/schema";
 
 const connectionString = process.env.DATABASE_URL;
 

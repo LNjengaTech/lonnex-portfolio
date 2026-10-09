@@ -335,8 +335,8 @@ export default function StyleguidePage() {
               </Dialog>
 
               <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline">Open Sheet</Button>
+                <SheetTrigger>
+                  Open Sheet
                 </SheetTrigger>
                 <SheetContent side="right">
                   <SheetHeader>

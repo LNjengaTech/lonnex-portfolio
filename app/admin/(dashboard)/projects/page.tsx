@@ -54,7 +54,7 @@ export default async function AdminProjectsPage() {
 
       <ProjectsClient
         initialProjects={formattedProjects}
-        mediaAssets={mediaAssets}
+        mediaAssets={mediaAssets.map((a) => ({ ...a, type: a.type as "image" | "video" }))}
       />
     </div>
   );

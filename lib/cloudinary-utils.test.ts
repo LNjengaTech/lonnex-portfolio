@@ -35,12 +35,12 @@ describe("cloudinary URL builders", () => {
     const url = cloudVideoPosterUrl("portfolio/projects/demo", 1280);
     expect(url).toContain("so_0");
     expect(url).toContain("w_1280");
-    expect(url).toEndWith(".jpg");
+    expect(url.endsWith(".jpg")).toBe(true);
   });
 
   it("builds a valid base64 SVG placeholder from a dominant color", () => {
     const placeholder = dominantColorPlaceholder("#0066FF");
-    expect(placeholder).toStartWith("data:image/svg+xml;base64,");
+    expect(placeholder.startsWith("data:image/svg+xml;base64,")).toBe(true);
     const decoded = Buffer.from(
       placeholder.replace("data:image/svg+xml;base64,", ""),
       "base64"
@@ -58,7 +58,7 @@ describe("cloudinary URL builders", () => {
     // Cloudinary public ID returns transformed Cloudinary URL
     const resolved = resolveMediaUrl("portfolio/media/zfyvma4czaxdbddax4qi");
     expect(resolved).toContain("portfolio/media/zfyvma4czaxdbddax4qi");
-    expect(resolved).toStartWith("https://res.cloudinary.com/");
+    expect(resolved.startsWith("https://res.cloudinary.com/")).toBe(true);
 
     // Empty / null returns empty string
     expect(resolveMediaUrl(null)).toBe("");

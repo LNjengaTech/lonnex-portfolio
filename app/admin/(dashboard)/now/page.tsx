@@ -12,7 +12,7 @@ export default async function AdminNowPage() {
   const logsData = await getBuildLogEntries(true);
 
   const formattedAvailability: AvailabilityInput = {
-    status: availabilityData.status,
+    status: availabilityData.status as "available" | "booked" | "limited",
     message: availabilityData.message,
     nextAvailableDate: availabilityData.nextAvailableDate,
   };

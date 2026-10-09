@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "@/lib/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { availability } from "@/lib/db/schema";

@@ -34,7 +34,7 @@ export default async function AdminSettingsPage() {
 
       <SettingsClientForm
         initialSettings={formattedSettings}
-        mediaAssets={media}
+        mediaAssets={media.map((a) => ({ ...a, type: a.type as "image" | "video" }))}
       />
     </div>
   );

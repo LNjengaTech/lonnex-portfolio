@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { siteSettings } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";

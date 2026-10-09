@@ -33,6 +33,7 @@ import {
 import { SortableListItem } from "@/components/admin/sortable-list-item";
 import { HexPhotoPreview } from "@/components/admin/hex-photo-preview";
 import { MediaPicker, type MediaAsset } from "@/components/admin/media-picker";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 import {
   updateProfileAction,
   createSkillCategoryAction,
@@ -706,7 +707,10 @@ export function AboutClient({
                 if (selected.length > 0) {
                   setProfileData({
                     ...profileData,
-                    photoUrl: selected[0].publicId,
+                    photoUrl: resolveMediaUrl(selected[0].publicId, {
+                      width: 600,
+                      height: 600,
+                    }),
                   });
                 }
               }}
@@ -1742,7 +1746,10 @@ export function AboutClient({
                 if (selected.length > 0) {
                   setTestForm({
                     ...testForm,
-                    photoUrl: selected[0].publicId,
+                    photoUrl: resolveMediaUrl(selected[0].publicId, {
+                      width: 400,
+                      height: 400,
+                    }),
                   });
                 }
               }}

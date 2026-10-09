@@ -1,5 +1,8 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
+import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -25,21 +28,11 @@ function buildUrl(
   height: number,
   crop: string
 ): string {
+  // If publicId is already a full URL, return it directly
+  if (publicId.startsWith("http://") || publicId.startsWith("https://") || publicId.startsWith("/")) {
+    return publicId;
+  }
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,c_${crop},w_${width},h_${height}/${publicId}`;
-}
-
-function buildSrcSet(
-  publicId: string,
-  height: number,
-  crop: string
-): string {
-  const widths = [400, 800, 1200, 1600, 2000];
-  return widths
-    .map((w) => {
-      const h = Math.round((w / 1) * (height / Math.max(height, 1)));
-      return `${buildUrl(publicId, w, h, crop)} ${w}w`;
-    })
-    .join(", ");
 }
 
 export function CloudImage({
@@ -54,11 +47,15 @@ export function CloudImage({
   crop = "fill",
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
 }: CloudImageProps) {
-  if (!CLOUD_NAME) {
-    // Fallback placeholder when Cloudinary is not configured
+  const [hasError, setHasError] = React.useState(false);
+
+  if (!CLOUD_NAME || hasError) {
     return (
       <div
-        className={cn("bg-border flex items-center justify-center", className)}
+        className={cn(
+          "bg-surface border border-border flex flex-col items-center justify-center text-muted-foreground p-2",
+          className
+        )}
         style={
           fill
             ? { position: "absolute", inset: 0 }
@@ -66,7 +63,12 @@ export function CloudImage({
         }
         role="img"
         aria-label={alt}
-      />
+      >
+        <ImageOff className="h-5 w-5 opacity-40 mb-1" />
+        <span className="font-mono text-[9px] uppercase tracking-wider opacity-60 truncate max-w-full">
+          {alt || "Image"}
+        </span>
+      </div>
     );
   }
 
@@ -81,6 +83,8 @@ export function CloudImage({
       fill={fill}
       priority={priority}
       sizes={sizes}
+      unoptimized
+      onError={() => setHasError(true)}
       className={className}
       placeholder={dominantColor ? "blur" : "empty"}
       blurDataURL={
@@ -94,3 +98,4 @@ export function CloudImage({
     />
   );
 }
+

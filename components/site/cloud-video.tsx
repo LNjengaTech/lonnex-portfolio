@@ -24,10 +24,16 @@ interface CloudVideoProps {
 }
 
 function buildVideoUrl(publicId: string, quality = "auto"): string {
+  if (publicId.startsWith("http://") || publicId.startsWith("https://") || publicId.startsWith("/")) {
+    return publicId;
+  }
   return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_${quality}/${publicId}`;
 }
 
 function buildPosterUrl(publicId: string, width: number): string {
+  if (publicId.startsWith("http://") || publicId.startsWith("https://") || publicId.startsWith("/")) {
+    return "";
+  }
   return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto,c_fill,w_${width},so_0/${publicId}.jpg`;
 }
 

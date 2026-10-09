@@ -4,6 +4,7 @@ import {
   cloudVideoUrl,
   cloudVideoPosterUrl,
   dominantColorPlaceholder,
+  resolveMediaUrl,
 } from "./cloudinary-utils";
 
 describe("cloudinary URL builders", () => {
@@ -46,4 +47,22 @@ describe("cloudinary URL builders", () => {
     ).toString("utf8");
     expect(decoded).toContain("#0066FF");
   });
+
+  it("resolves full URLs and public IDs safely with resolveMediaUrl", () => {
+    // Absolute URLs return untouched
+    expect(resolveMediaUrl("https://images.unsplash.com/photo-123")).toBe(
+      "https://images.unsplash.com/photo-123"
+    );
+    expect(resolveMediaUrl("/placeholder.png")).toBe("/placeholder.png");
+
+    // Cloudinary public ID returns transformed Cloudinary URL
+    const resolved = resolveMediaUrl("portfolio/media/zfyvma4czaxdbddax4qi");
+    expect(resolved).toContain("portfolio/media/zfyvma4czaxdbddax4qi");
+    expect(resolved).toStartWith("https://res.cloudinary.com/");
+
+    // Empty / null returns empty string
+    expect(resolveMediaUrl(null)).toBe("");
+    expect(resolveMediaUrl("")).toBe("");
+  });
 });
+

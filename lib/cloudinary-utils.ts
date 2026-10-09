@@ -55,3 +55,35 @@ export function dominantColorPlaceholder(hex: string): string {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"><rect width="1" height="1" fill="${hex}"/></svg>`;
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
+
+/**
+ * Safely resolves a media identifier (URL or Cloudinary public ID) to an absolute URL.
+ * Prevents relative URL requests that cause 404s (e.g. /admin/portfolio/media/...).
+ */
+export function resolveMediaUrl(
+  urlOrPublicId?: string | null,
+  options?: {
+    width?: number;
+    height?: number;
+    crop?: "fill" | "fit" | "scale" | "crop" | "thumb";
+    quality?: "auto" | number;
+    type?: "image" | "video";
+  }
+): string {
+  if (!urlOrPublicId) return "";
+  const trimmed = urlOrPublicId.trim();
+  if (!trimmed) return "";
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("data:") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+  if (options?.type === "video") {
+    return cloudVideoUrl(trimmed);
+  }
+  return cloudImageUrl(trimmed, options);
+}
+

@@ -4,6 +4,7 @@ import * as React from "react";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { cn } from "@/lib/utils";
 import { Lock, Play } from "lucide-react";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 
 interface HexTilePreviewProps {
   title: string;
@@ -35,6 +36,8 @@ export function HexTilePreview({
   };
 
   const { height, width, text: textSize } = sizeMap[tileSize] || sizeMap.M;
+  const resolvedCover = resolveMediaUrl(coverUrl, { width: 800, height: 600 });
+  const resolvedVideo = resolveMediaUrl(previewVideoUrl, { type: "video" });
 
   return (
     <div className={cn("flex flex-col items-center gap-3", className)}>
@@ -67,7 +70,7 @@ export function HexTilePreview({
           style={{ clipPath: HEX_CLIP_PATH }}
         >
           {/* Cover Image or Video Preview */}
-          {coverUrl ? (
+          {resolvedCover ? (
             <div
               className={cn(
                 "absolute inset-0 h-full w-full transition-transform duration-500",
@@ -75,9 +78,9 @@ export function HexTilePreview({
                 confidential && "filter blur-sm"
               )}
             >
-              {isHovered && previewVideoUrl ? (
+              {isHovered && resolvedVideo ? (
                 <video
-                  src={previewVideoUrl}
+                  src={resolvedVideo}
                   autoPlay
                   loop
                   muted
@@ -86,7 +89,7 @@ export function HexTilePreview({
                 />
               ) : (
                 <img
-                  src={coverUrl}
+                  src={resolvedCover}
                   alt={title || "Project cover"}
                   className="h-full w-full object-cover"
                 />

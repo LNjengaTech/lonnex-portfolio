@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select } from "@/components/ui/select";
 import { MediaPicker, type MediaAsset } from "@/components/admin/media-picker";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 import { updateSiteSettingsAction } from "./actions";
 import type { SiteSettingsInput } from "@/lib/validators/settings";
 
@@ -421,7 +422,7 @@ export function SettingsClientForm({
           assets={mediaAssets}
           onSelect={(selected) => {
             if (selected.length > 0) {
-              setFormData({ ...formData, cvUrl: selected[0].publicId });
+              setFormData({ ...formData, cvUrl: resolveMediaUrl(selected[0].publicId) });
             }
           }}
           onClose={() => setShowMediaPicker(false)}

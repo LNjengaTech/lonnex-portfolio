@@ -59,6 +59,7 @@ import type {
   StudioCollectionInput,
 } from "@/lib/validators/studio";
 import { cn } from "@/lib/utils";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 
 interface StudioItemRecord extends StudioItemInput {
   id: number;
@@ -322,7 +323,11 @@ export function StudioClient({
           categoryId: defaultCatId,
           collectionId: null,
           mediaType: a.type,
-          mediaUrl: a.publicId,
+          mediaUrl: resolveMediaUrl(a.publicId, {
+            type: a.type,
+            width: a.width || 1200,
+            height: a.height || 1200,
+          }),
           cloudinaryId: a.publicId,
           width: a.width || 1000,
           height: a.height || 1000,
@@ -1198,7 +1203,11 @@ export function StudioClient({
               const ratio = calculateAspectRatio(item.width, item.height);
               setItemForm({
                 ...itemForm,
-                mediaUrl: item.publicId,
+                mediaUrl: resolveMediaUrl(item.publicId, {
+                  type: item.type,
+                  width: item.width || 1200,
+                  height: item.height || 1200,
+                }),
                 cloudinaryId: item.publicId,
                 mediaType: item.type,
                 width: item.width,

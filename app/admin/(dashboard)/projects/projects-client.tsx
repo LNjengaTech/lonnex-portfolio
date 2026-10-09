@@ -37,9 +37,9 @@ import {
   deleteProjectAction,
   reorderProjectsAction,
   togglePublishProjectAction,
-} from "./actions";
 import type { ProjectInput } from "@/lib/validators/projects";
 import { cn } from "@/lib/utils";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 
 interface ProjectItem extends ProjectInput {
   id: number;
@@ -874,7 +874,10 @@ export function ProjectsClient({
                   ...formData,
                   coverMedia: {
                     publicId: item.publicId,
-                    url: item.publicId,
+                    url: resolveMediaUrl(item.publicId, {
+                      width: item.width || 1200,
+                      height: item.height || 800,
+                    }),
                     width: item.width,
                     height: item.height,
                     format: item.format,
@@ -886,7 +889,7 @@ export function ProjectsClient({
                   ...formData,
                   previewVideo: {
                     publicId: item.publicId,
-                    url: item.publicId,
+                    url: resolveMediaUrl(item.publicId, { type: "video" }),
                     width: item.width,
                     height: item.height,
                   },

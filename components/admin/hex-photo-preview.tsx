@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ZoomIn, ZoomOut, Move } from "lucide-react";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { cn } from "@/lib/utils";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 
 interface HexPhotoPreviewProps {
   photoUrl: string;
@@ -90,7 +91,7 @@ export function HexPhotoPreview({
             >
               {/* Unoptimized or standard img to support external or cloudinary URLs flexibly */}
               <img
-                src={photoUrl}
+                src={resolveMediaUrl(photoUrl, { width: 600, height: 600 })}
                 alt="Profile photo hex preview"
                 className="h-full w-full object-cover pointer-events-none select-none"
               />

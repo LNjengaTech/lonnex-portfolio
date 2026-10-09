@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* SINGLE POINT OF CHANGE for all colours and fonts. Edit here only. */
+
+:root {
+  /* brand palette */
+  --brand-blue: #0066FF;
+  --brand-navy: #0B0F17;
+  --brand-white: #FFFFFF;
+  --slate-100: #F1F5FF;
+  --slate-200: #CBD5E1;
+  --slate-400: #64748B;
+  --slate-600: #334155;
+  --navy-2: #121926; /* derived surface for dark mode; edit freely */
+
+  /* status (functional only) */
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  /* semantic: LIGHT (default) */
+  --background: var(--slate-100);
+  --surface: var(--brand-white);
+  --foreground: var(--brand-navy);
+  --muted-foreground: var(--slate-600);
+  --border: var(--slate-200);
+  --primary: var(--brand-blue);
+  --primary-foreground: var(--brand-white);
+  --invert: var(--brand-navy);
+  --invert-foreground: var(--brand-white);
+
+  --radius: 0px;
+}
+
+[data-theme="dark"] {
+  --background: var(--brand-navy);
+  --surface: var(--navy-2);
+  --foreground: var(--brand-white);
+  --muted-foreground: var(--slate-200);
+  --border: var(--slate-600);
+  --primary: var(--brand-blue);
+  --primary-foreground: var(--brand-white);
+  --invert: var(--brand-white);
+  --invert-foreground: var(--brand-navy);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-invert: var(--invert);
+  --color-invert-foreground: var(--invert-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

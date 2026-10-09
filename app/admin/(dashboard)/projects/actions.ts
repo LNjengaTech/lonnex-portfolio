@@ -20,7 +20,9 @@ export async function createProjectAction(data: ProjectInput) {
   if (!validated.success) {
     return {
       success: false,
-      error: validated.error.issues.map((i) => i.message).join(", "),
+      error: validated.error.issues
+        .map((i) => `${i.path.length ? `${i.path.join(".")}: ` : ""}${i.message}`)
+        .join("; "),
     };
   }
 
@@ -122,7 +124,9 @@ export async function updateProjectAction(id: number, data: ProjectInput) {
   if (!validated.success) {
     return {
       success: false,
-      error: validated.error.issues.map((i) => i.message).join(", "),
+      error: validated.error.issues
+        .map((i) => `${i.path.length ? `${i.path.join(".")}: ` : ""}${i.message}`)
+        .join("; "),
     };
   }
 

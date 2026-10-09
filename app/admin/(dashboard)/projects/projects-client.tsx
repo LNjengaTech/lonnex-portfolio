@@ -149,6 +149,11 @@ export function ProjectsClient({
 
   const handleOpenEdit = (project: ProjectItem) => {
     setEditingId(project.id);
+    const cover = (project.coverMedia || {}) as any;
+    const coverId = cover.publicId || cover.cloudinaryId || cover.url || "portfolio/placeholder";
+    const video = project.previewVideo ? ((project.previewVideo || {}) as any) : null;
+    const videoId = video ? (video.publicId || video.cloudinaryId || video.url || "") : "";
+
     setFormData({
       slug: project.slug,
       title: project.title,
@@ -162,8 +167,24 @@ export function ProjectsClient({
       featured: project.featured,
       confidential: project.confidential,
       order: project.order,
-      coverMedia: project.coverMedia,
-      previewVideo: project.previewVideo || null,
+      coverMedia: {
+        publicId: coverId,
+        cloudinaryId: coverId,
+        url: cover.url || "",
+        width: typeof cover.width === "number" ? cover.width : 1200,
+        height: typeof cover.height === "number" ? cover.height : 800,
+        format: cover.format || "jpg",
+        dominantColor: cover.dominantColor || null,
+      },
+      previewVideo: video
+        ? {
+            publicId: videoId,
+            cloudinaryId: videoId,
+            url: video.url || "",
+            width: typeof video.width === "number" ? video.width : 1920,
+            height: typeof video.height === "number" ? video.height : 1080,
+          }
+        : null,
       liveUrl: project.liveUrl || "",
       repoUrl: project.repoUrl || "",
       problem: project.problem,

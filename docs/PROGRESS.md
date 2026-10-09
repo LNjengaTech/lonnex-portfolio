@@ -1,13 +1,13 @@
 # Progress
 
-**Current phase:** 4
+**Current phase:** 5
 
 ## Phases
 - [x] 0 Foundation
 - [x] 1 Design system
 - [x] 2 Data and auth
 - [x] 3 Media pipeline
-- [ ] 4 Admin: settings, profile, now, skills, services, experience, contacts, testimonials
+- [x] 4 Admin: settings, profile, now, skills, services, experience, contacts, testimonials
 - [ ] 5 Admin: projects + studio
 - [ ] 6 Admin: journal
 - [ ] 7 Public shell and Hive home
@@ -34,6 +34,11 @@
 - 2026-10-09: Built MediaUploader (drag-drop,multi-file,progress,cancel), MediaPicker (searchable modal), MediaLibraryClient (alt-text editing, safe delete).
 - 2026-10-09: Switched asset deletion to Cloudinary Admin API (delete_resources) with { invalidate: true } to guarantee complete multi-resource and video removal from Cloudinary and worldwide CDN cache.
 - 2026-10-09: Verified local PostgreSQL database connectivity, pushed full 27-table schema, and verified admin authentication.
+- 2026-10-09: Implemented complete Phase 4 Admin CRUD modules (Settings, Profile, Now, Skills, Experience, Services, Testimonials, Contacts, Messages inbox).
+- 2026-10-09: Built one-click instant availability toggle dropdown in AdminHeader with server action and tag-based cache revalidation.
+- 2026-10-09: Built HexPhotoPreview featuring pointy-top geometry with layered brand offset wireframes, zoom, and panning controls.
+- 2026-10-09: Created reusable SortableListItem with HTML5 drag-and-drop reordering, keyboard up/down controls, and published toggles.
+- 2026-10-09: Established complete Zod validation schemas in lib/validators, query library in lib/db/queries, and server actions with requireAuth and audit logging.
 
 ## Open issues
 - SVG logo mark is an architectural placeholder; replace with finalized brand vector when ready.

@@ -7,6 +7,7 @@ import {
   Palette,
   Plus,
   ShieldCheck,
+  User,
 } from "lucide-react";
 import { HexButton } from "@/components/hex/hex-button";
 import { Badge } from "@/components/ui/badge";
@@ -155,6 +156,13 @@ export default async function AdminDashboardPage() {
             >
               <span>Update Now / Build Log</span>
               <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+            </Link>
+            <Link
+              href="/admin/about"
+              className="flex items-center justify-between p-3 border border-border bg-background hover:border-primary transition-colors text-xs font-mono uppercase"
+            >
+              <span>Manage About & Skills</span>
+              <User className="h-3.5 w-3.5 text-muted-foreground" />
             </Link>
             <Link
               href="/admin/settings"

@@ -367,7 +367,129 @@ async function seed() {
       { title: "[Placeholder] DataCore Dashboard Icon Set", categoryId: catBrand.id, mediaType: "image", mediaUrl: "https://images.unsplash.com/photo-1558655146-364adaf1fcc9?auto=format&fit=crop&w=800&h=800&q=80", cloudinaryId: "placeholder/brand-03", width: 800, height: 800, ratio: "1:1", specLabel: "Icon Set / 48 SVG icons", year: "2024", confidential: true, order: 4, published: true },
     ]);
   }
-  console.log("[Seed] Studio categories, collections, and items seeded.");
+  // 11. Journal: Series, Tags, Articles
+  const [seriesHex, seriesDesign] = await db
+    .insert(schema.series)
+    .values([
+      {
+        title: "Hexagonal Architecture & The Hive",
+        slug: "hexagonal-architecture",
+        description: "[Placeholder] Deep dives into non-overlapping coordinate grids, pointy-top axial math, and spatial UX.",
+        order: 1,
+      },
+      {
+        title: "Modern Full-Stack Systems",
+        slug: "modern-full-stack",
+        description: "[Placeholder] Architectural patterns for Next.js, PostgreSQL, and scalable CMS design.",
+        order: 2,
+      },
+    ])
+    .returning();
+
+  const [tagArch, tagTs, tagNext, tagDesign] = await db
+    .insert(schema.tags)
+    .values([
+      { name: "Architecture", slug: "architecture" },
+      { name: "TypeScript", slug: "typescript" },
+      { name: "Next.js", slug: "nextjs" },
+      { name: "Design", slug: "design" },
+    ])
+    .returning();
+
+  if (seriesHex && seriesDesign && tagArch && tagTs && tagNext && tagDesign) {
+    const [art1, art2] = await db
+      .insert(schema.articles)
+      .values([
+        {
+          title: "Engineering Pointy-Top Hexagonal Grids in TypeScript",
+          slug: "engineering-pointy-top-hexagonal-grids",
+          excerpt:
+            "A technical breakdown of axial coordinate mathematics, distance metrics, and non-overlapping honeycomb packing for reactive canvas layouts.",
+          contentJson: {
+            type: "doc",
+            content: [
+              {
+                type: "heading",
+                attrs: { level: 2 },
+                content: [{ type: "text", text: "1. The Geometry of Pointy-Top Hexagons" }],
+              },
+              {
+                type: "paragraph",
+                content: [
+                  {
+                    type: "text",
+                    text: "Unlike standard square grids, a regular pointy-top hexagon introduces 60-degree radial symmetry. Using axial coordinates (q, r), distance and neighbor navigation become linear matrix transformations.",
+                  },
+                ],
+              },
+              {
+                type: "blockquote",
+                content: [
+                  {
+                    type: "paragraph",
+                    text: "A hexagonal system offers uniform adjacent distance in all six directions, eliminating diagonal bias.",
+                  },
+                ],
+              },
+            ],
+          },
+          htmlCache: "<h2>1. The Geometry of Pointy-Top Hexagons</h2><p>Unlike standard square grids, a regular pointy-top hexagon introduces 60-degree radial symmetry. Using axial coordinates (q, r), distance and neighbor navigation become linear matrix transformations.</p><blockquote><p>A hexagonal system offers uniform adjacent distance in all six directions, eliminating diagonal bias.</p></blockquote>",
+          seriesId: seriesHex.id,
+          seriesPart: 1,
+          status: "published",
+          readingTime: 5,
+          seo: {
+            title: "Engineering Hexagonal Grids in TypeScript",
+            description: "Deep dive into axial coordinate mathematics and honeycomb packing.",
+          },
+        },
+        {
+          title: "High-Impact Commercial Vector Collateral: From Brand Kit to Print",
+          slug: "commercial-vector-collateral-print-guide",
+          excerpt:
+            "Best practices for designing large-format rollup banners, promotional fliers, and high-density business cards that translate flawlessly from screen to print.",
+          contentJson: {
+            type: "doc",
+            content: [
+              {
+                type: "heading",
+                attrs: { level: 2 },
+                content: [{ type: "text", text: "Precision Specifications for Physical Collateral" }],
+              },
+              {
+                type: "paragraph",
+                content: [
+                  {
+                    type: "text",
+                    text: "When delivering commercial graphic design, understanding mechanical print limitations—such as 3mm bleed margins, safe visual zones, and CMYK gamut boundaries—is just as vital as code quality.",
+                  },
+                ],
+              },
+            ],
+          },
+          htmlCache: "<h2>Precision Specifications for Physical Collateral</h2><p>When delivering commercial graphic design, understanding mechanical print limitations—such as 3mm bleed margins, safe visual zones, and CMYK gamut boundaries—is just as vital as code quality.</p>",
+          seriesId: seriesDesign.id,
+          seriesPart: 1,
+          status: "draft",
+          readingTime: 4,
+          seo: {
+            title: "Commercial Vector Collateral Print Guide",
+            description: "Designing rollup banners and fliers for large format print.",
+          },
+        },
+      ])
+      .returning();
+
+    if (art1 && art2) {
+      await db.insert(schema.articleTags).values([
+        { articleId: art1.id, tagId: tagArch.id },
+        { articleId: art1.id, tagId: tagTs.id },
+        { articleId: art1.id, tagId: tagNext.id },
+        { articleId: art2.id, tagId: tagDesign.id },
+      ]);
+    }
+  }
+  console.log("[Seed] Journal series, tags, articles, and article-tags seeded.");
 
   console.log("Database seeded successfully with realistic placeholder content!");
   await client.end();

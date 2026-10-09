@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 6
+**Current phase:** 7
 
 ## Phases
 - [x] 0 Foundation
@@ -9,7 +9,7 @@
 - [x] 3 Media pipeline
 - [x] 4 Admin: settings, profile, now, skills, services, experience, contacts, testimonials
 - [x] 5 Admin: projects + studio
-- [ ] 6 Admin: journal
+- [x] 6 Admin: journal
 - [ ] 7 Public shell and Hive home
 - [ ] 8a Public: Work
 - [ ] 8b Public: Studio
@@ -47,8 +47,11 @@
 - 2026-10-09: Created lib/cache.ts wrapper for revalidateTag/revalidatePath with stable 1-arg signature across Next.js version changes.
 - 2026-10-09: Added export const dynamic = "force-dynamic" to admin (dashboard) layout to suppress static pre-render warnings at build time.
 - 2026-10-09: Build passes clean (0 TS errors, 0 lint errors). All admin routes correctly render as ƒ (Dynamic).
+- 2026-10-09: Built Phase 6 Journal admin — Tiptap v3 editor (bold/italic/headings/lists/blockquote/code blocks via lowlight, links), .md import (gray-matter + regex parser), .docx import (mammoth), .md export (YAML front matter), draft/scheduled/published workflow with datetime scheduling, tags and series management, autosave every 30s, write/meta/SEO tabs with SERP preview, word count and reading-time stats.
 
 ## Open issues
 - SVG logo mark is an architectural placeholder; replace with finalized brand vector when ready.
 - Node and npm commands run on host system by user.
 - Cloudinary CDN delivery blocked at account level (x-cld-error: ACL deny) — user must visit https://cloudinary.com/console/ducayuasy → Settings → Security to re-enable delivery.
+- Phase 6 requires npm install of new packages (see install command below).
+

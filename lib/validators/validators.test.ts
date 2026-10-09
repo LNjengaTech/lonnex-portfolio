@@ -267,3 +267,47 @@ describe("Phase 5 Projects & Studio Validators", () => {
   });
 });
 
+describe("Phase 6 Journal Validators", () => {
+  it("validates tag and series schemas", async () => {
+    const { tagSchema, seriesSchema } = await import("./articles");
+
+    const tag = tagSchema.safeParse({
+      name: "Architecture",
+      slug: "architecture",
+    });
+    expect(tag.success).toBe(true);
+
+    const series = seriesSchema.safeParse({
+      title: "Building The Hive",
+      slug: "building-the-hive",
+      description: "A deep dive into custom hex geometry and CMS.",
+      order: 1,
+    });
+    expect(series.success).toBe(true);
+  });
+
+  it("validates article schema with contentJson and status", async () => {
+    const { articleSchema } = await import("./articles");
+
+    const validArticle = {
+      slug: "hex-math-deep-dive",
+      title: "Hexagonal Grid Coordinate Math in TypeScript",
+      excerpt: "Explaining pointy-top axial coordinates and screen space projection.",
+      contentJson: { type: "doc", content: [{ type: "paragraph", text: "Hello" }] },
+      status: "published" as const,
+      readingTime: 4,
+      tagIds: [1, 2],
+    };
+
+    const res = articleSchema.safeParse(validArticle);
+    expect(res.success).toBe(true);
+
+    // Invalid slug
+    const invalid = articleSchema.safeParse({
+      ...validArticle,
+      slug: "Invalid Slug!",
+    });
+    expect(invalid.success).toBe(false);
+  });
+});
+

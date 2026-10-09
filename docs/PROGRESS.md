@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 8a
+**Current phase:** 8b
 
 ## Phases
 - [x] 0 Foundation
@@ -11,7 +11,7 @@
 - [x] 5 Admin: projects + studio
 - [x] 6 Admin: journal
 - [x] 7 Public shell and Hive home
-- [ ] 8a Public: Work
+- [x] 8a Public: Work
 - [ ] 8b Public: Studio
 - [ ] 8c Public: Journal
 - [ ] 8d Public: About, Now, Contact
@@ -19,6 +19,10 @@
 - [ ] 10 SEO and launch
 
 ## Decisions log
+- 2026-10-09: Implemented Phase 8a Public Work — Honeycomb Wall (packed non-overlapping axial mosaic aware of S/M/L/XL tile sizes on desktop, interlocking vertical zig-zag on mobile), Index view (giant 8vw typography with floating cursor-following hex preview), and Timeline view (horizontal 60-degree zig-zag with connecting axial guideline and year milestones).
+- 2026-10-09: Implemented dynamic category and tech stack filters with signature Hive behavior: non-matching hexes flip to outline-only wireframe mode instead of disappearing, preserving honeycomb integrity.
+- 2026-10-09: Built full case study page (/work/[slug]) featuring hero with role, title, summary, action links, and shared-element hex cover transition (`view-transition-name: project-hero-${slug}`); key metrics strip with confidential shield; Problem / Approach / Result three big numbered blocks; embedded video walkthrough; mixed-size chamfered gallery with full-screen keyboard-accessible modal lightbox; client testimonial card; sticky facts column; and "Next project" hex navigation at footer.
+- 2026-10-09: Added cached public queries `getPublishedProjectsWithDetails` and `getPublishedProjectDetailBySlug` with tag-based cache revalidation ("projects", "project_media", "testimonials") and updated seed script with gallery media and client testimonials.
 - 2026-10-09: Implemented Phase 7 Public Shell and Hive Home with zero hardcoded content from DB.
 - 2026-10-09: Constructed mathematically exact 7-hexagon honeycomb cluster on tablet & desktop (H=136/164px) with photo at center and 6 surrounding rooms (Work, Studio, Journal, About, Now, Contact) and interlocking vertical zig-zag column on mobile (<640px).
 - 2026-10-09: Built first-visit HexLoader with typewriter effect and sessionStorage gate, custom pointy-top HexCursor (desktop only), and Cmd/K CommandPalette.

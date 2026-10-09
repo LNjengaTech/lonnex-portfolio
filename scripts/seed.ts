@@ -337,6 +337,26 @@ async function seed() {
       { projectId: projectRows[4].id, name: "PWA", order: 4 },
     ]);
     console.log("[Seed] Projects and stack tags seeded.");
+
+    // 9b. Project Gallery Media
+    const existingMedia = await db.select().from(schema.projectMedia).limit(1);
+    if (existingMedia.length === 0) {
+      await db.insert(schema.projectMedia).values([
+        // Project 0 (Hive Portfolio Engine)
+        { projectId: projectRows[0].id, mediaType: "image", cloudinaryId: "placeholder/hive-gallery-1", url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "Axial Hex Grid Layout Engine & Math Matrix", order: 1 },
+        { projectId: projectRows[0].id, mediaType: "image", cloudinaryId: "placeholder/hive-gallery-2", url: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "Admin CMS Dashboard Architecture & Real-time Live Preview", order: 2 },
+        // Project 1 (Nairobi Events Platform)
+        { projectId: projectRows[1].id, mediaType: "image", cloudinaryId: "placeholder/events-gallery-1", url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "High-Volume Mobile Checkout Flow with Instant M-Pesa Push", order: 1 },
+        { projectId: projectRows[1].id, mediaType: "image", cloudinaryId: "placeholder/events-gallery-2", url: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "Vendor Stage Gate & Ticket Verification Scanner", order: 2 },
+        // Project 2 (HiveLink Mobile)
+        { projectId: projectRows[2].id, mediaType: "image", cloudinaryId: "placeholder/hivelink-gallery-1", url: "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "Flutter Dual-Theme Interface & Escrow Milestone Management", order: 1 },
+        // Project 3 (Brand Identity System CLI)
+        { projectId: projectRows[3].id, mediaType: "image", cloudinaryId: "placeholder/brand-cli-gallery-1", url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "Automated Token Compilation & Vector Rasterization Engine", order: 1 },
+        // Project 4 (DataCore Systems Dashboard)
+        { projectId: projectRows[4].id, mediaType: "image", cloudinaryId: "placeholder/datacore-gallery-1", url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 800, caption: "Telemetry SCADA Visualization with Sub-200ms WebSocket Pipelines", order: 1 },
+      ]);
+      console.log("[Seed] Project gallery media seeded.");
+    }
   }
   }
 
@@ -516,6 +536,38 @@ async function seed() {
       }
     }
     console.log("[Seed] Journal series, tags, articles, and article-tags seeded.");
+  }
+
+  // 12. Testimonials
+  const existingTestimonials = await db.select().from(schema.testimonials).limit(1);
+  if (existingTestimonials.length === 0) {
+    await db.insert(schema.testimonials).values([
+      {
+        name: "Kevin Mwangi",
+        role: "Head of Product, EventsNBO Ltd",
+        quote: "Lonnex delivered a flawless ticketing engine that withstood tens of thousands of concurrent checkouts without a hiccup. His design aesthetics combined with backend precision are second to none.",
+        photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80",
+        order: 1,
+        published: true,
+      },
+      {
+        name: "Amina Yusuf",
+        role: "Founder & CEO, HiveLink Ltd",
+        quote: "Working with Lonnex transformed our mobile MVP from a basic prototype into an enterprise-grade platform. The escrow workflow he designed gave our users immediate confidence.",
+        photoUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&h=200&q=80",
+        order: 2,
+        published: true,
+      },
+      {
+        name: "Marcus Vance",
+        role: "Director of Engineering, DataCore Ltd",
+        quote: "The telemetry dashboard Lonnex engineered eliminated 30-second delays, delivering immediate sub-second real-time responsiveness that our field technicians rely on daily.",
+        photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80",
+        order: 3,
+        published: true,
+      },
+    ]);
+    console.log("[Seed] Testimonials seeded.");
   }
 
   console.log("Database seeded successfully with realistic placeholder content!");

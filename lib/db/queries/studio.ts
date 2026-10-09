@@ -1,4 +1,5 @@
 import { asc, desc, eq, and } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { studioCategories, studioCollections, studioItems } from "@/lib/db/schema";
 
@@ -87,3 +88,23 @@ export async function getStudioItemById(id: number) {
     return null;
   }
 }
+
+// ── Public cached queries (used by /studio server page) ─────────────────────
+
+export const getPublishedStudioCategories = unstable_cache(
+  async () => getStudioCategories(false),
+  ["public-studio-categories"],
+  { tags: ["studio_categories"], revalidate: 3600 }
+);
+
+export const getPublishedStudioCollections = unstable_cache(
+  async () => getStudioCollections(false),
+  ["public-studio-collections"],
+  { tags: ["studio_collections"], revalidate: 3600 }
+);
+
+export const getPublishedStudioItems = unstable_cache(
+  async () => getStudioItems(false),
+  ["public-studio-items"],
+  { tags: ["studio_items"], revalidate: 3600 }
+);

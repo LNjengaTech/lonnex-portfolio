@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 8b
+**Current phase:** 8c
 
 ## Phases
 - [x] 0 Foundation
@@ -12,7 +12,7 @@
 - [x] 6 Admin: journal
 - [x] 7 Public shell and Hive home
 - [x] 8a Public: Work
-- [ ] 8b Public: Studio
+- [x] 8b Public: Studio
 - [ ] 8c Public: Journal
 - [ ] 8d Public: About, Now, Contact
 - [ ] 9 Polish and performance
@@ -59,6 +59,7 @@
 - 2026-10-09: Built Phase 6 Journal admin — Tiptap v3 editor (bold/italic/headings/lists/blockquote/code blocks via lowlight, links), .md import (gray-matter + regex parser), .docx import (mammoth), .md export (YAML front matter), draft/scheduled/published workflow with datetime scheduling, tags and series management, autosave every 30s, write/meta/SEO tabs with SERP preview, word count and reading-time stats.
 - 2026-10-09: Engineered responsive, retractable Admin UI shell (AdminShell) with slide-out overlay drawer for mobile screens (<768px), hex hamburger toggle in AdminHeader, auto-close on navigation/escape/backdrop, and desktop collapsible icon rail with persisted preference.
 - 2026-10-09: Made database seed script (scripts/seed.ts) fully idempotent across all entities (nowProject, skills, services, contacts, projects, studio, journal series/tags/articles) to safely permit re-runs without constraint errors.
+- 2026-10-09: Implemented Phase 8b Public Studio — "The Wall". Justified-rows + tall-rail layout engine in lib/studio-layout.ts (no layout shift; all dimensions from DB width/height). Components: StudioWall (client, category filter, ResizeObserver, video cap at 2 simultaneous), StudioLightbox (zoom/pan, keyboard nav, touch swipe, video support, spec panel), StudioCollectionPile (stacked offset pile, fans out on click), StudioFilterChips (hex category buttons). Server page at app/(site)/studio/page.tsx with cached queries tagged studio_categories/studio_collections/studio_items. 6 unit tests for layout engine.
 
 ## Open issues
 - SVG logo mark is an architectural placeholder; replace with finalized brand vector when ready.

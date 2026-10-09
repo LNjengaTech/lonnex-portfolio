@@ -48,10 +48,10 @@
 - 2026-10-09: Added export const dynamic = "force-dynamic" to admin (dashboard) layout to suppress static pre-render warnings at build time.
 - 2026-10-09: Build passes clean (0 TS errors, 0 lint errors). All admin routes correctly render as ƒ (Dynamic).
 - 2026-10-09: Built Phase 6 Journal admin — Tiptap v3 editor (bold/italic/headings/lists/blockquote/code blocks via lowlight, links), .md import (gray-matter + regex parser), .docx import (mammoth), .md export (YAML front matter), draft/scheduled/published workflow with datetime scheduling, tags and series management, autosave every 30s, write/meta/SEO tabs with SERP preview, word count and reading-time stats.
+- 2026-10-09: Engineered responsive, retractable Admin UI shell (AdminShell) with slide-out overlay drawer for mobile screens (<768px), hex hamburger toggle in AdminHeader, auto-close on navigation/escape/backdrop, and desktop collapsible icon rail with persisted preference.
+- 2026-10-09: Made database seed script (scripts/seed.ts) fully idempotent across all entities (nowProject, skills, services, contacts, projects, studio, journal series/tags/articles) to safely permit re-runs without constraint errors.
 
 ## Open issues
 - SVG logo mark is an architectural placeholder; replace with finalized brand vector when ready.
 - Node and npm commands run on host system by user.
 - Cloudinary CDN delivery blocked at account level (x-cld-error: ACL deny) — user must visit https://cloudinary.com/console/ducayuasy → Settings → Security to re-enable delivery.
-- Phase 6 requires npm install of new packages (see install command below).
-

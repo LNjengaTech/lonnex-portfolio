@@ -22,19 +22,20 @@ export function Command({
   );
 }
 
-export function CommandInput({
-  className,
-  value,
-  onValueChange,
-  placeholder = "Search commands...",
-  ...props
-}: Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
-  onValueChange?: (val: string) => void;
-}) {
+export const CommandInput = React.forwardRef<
+  HTMLInputElement,
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
+    onValueChange?: (val: string) => void;
+  }
+>(function CommandInput(
+  { className, value, onValueChange, placeholder = "Search commands...", ...props },
+  ref
+) {
   return (
     <div className="flex items-center border-b border-border px-3">
       <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
       <input
+        ref={ref}
         type="text"
         value={value}
         onChange={(e) => onValueChange?.(e.target.value)}
@@ -47,7 +48,8 @@ export function CommandInput({
       />
     </div>
   );
-}
+});
+CommandInput.displayName = "CommandInput";
 
 export function CommandList({
   className,

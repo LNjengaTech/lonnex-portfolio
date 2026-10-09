@@ -49,7 +49,7 @@ export function CloudImage({
 }: CloudImageProps) {
   const [hasError, setHasError] = React.useState(false);
 
-  if (!CLOUD_NAME || hasError) {
+  if (!CLOUD_NAME || hasError || !publicId?.trim()) {
     return (
       <div
         className={cn(

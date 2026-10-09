@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 7
+**Current phase:** 8a
 
 ## Phases
 - [x] 0 Foundation
@@ -10,7 +10,7 @@
 - [x] 4 Admin: settings, profile, now, skills, services, experience, contacts, testimonials
 - [x] 5 Admin: projects + studio
 - [x] 6 Admin: journal
-- [ ] 7 Public shell and Hive home
+- [x] 7 Public shell and Hive home
 - [ ] 8a Public: Work
 - [ ] 8b Public: Studio
 - [ ] 8c Public: Journal
@@ -19,6 +19,11 @@
 - [ ] 10 SEO and launch
 
 ## Decisions log
+- 2026-10-09: Implemented Phase 7 Public Shell and Hive Home with zero hardcoded content from DB.
+- 2026-10-09: Constructed mathematically exact 7-hexagon honeycomb cluster on tablet & desktop (H=136/164px) with photo at center and 6 surrounding rooms (Work, Studio, Journal, About, Now, Contact) and interlocking vertical zig-zag column on mobile (<640px).
+- 2026-10-09: Built first-visit HexLoader with typewriter effect and sessionStorage gate, custom pointy-top HexCursor (desktop only), and Cmd/K CommandPalette.
+- 2026-10-09: Added responsive RadialMenu with touch-friendly 60-degree radial hex cells, fixed SiteHeader with availability beacon, and SiteFooter with live Nairobi clock.
+- 2026-10-09: Integrated CSS View Transitions API for page transitions and crafted custom broken-hex 404 page.
 - 2026-10-08: Pinned exact latest stable versions (Next.js 16.4.0, React 19.3.0, Tailwind v4.3.3) per stability rules.
 - 2026-10-08: Sourced colors exclusively via CSS variables in app/globals.css with inline theme initialization script to prevent flash.
 - 2026-10-08: Implemented pointy-top hexagon geometry helpers and shadcn/ui components configured with radius 0.

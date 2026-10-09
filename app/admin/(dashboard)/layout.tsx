@@ -4,6 +4,9 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { logoutAdmin, requireAuth } from "@/lib/auth";
 import { getAvailability } from "@/lib/db/queries/availability";
 
+// All admin routes are session-gated and must be server-rendered on demand.
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardLayout({
   children,
 }: {

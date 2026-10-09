@@ -84,7 +84,7 @@ export default async function AdminStudioPage() {
         initialItems={formattedItems}
         initialCategories={formattedCategories}
         initialCollections={formattedCollections}
-        mediaAssets={mediaAssets.map((a) => ({ ...a, type: a.type as "image" | "video" }))}
+        mediaAssets={mediaAssets.map((a) => ({ ...a, type: a.type as "image" | "video", dominantColor: a.dominantColor ?? undefined }))}
       />
     </div>
   );

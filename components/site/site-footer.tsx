@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandHexTriple } from "@/components/hex/brand-hex-triple";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 import { NairobiClock } from "@/components/site/nairobi-clock";
 import { Globe } from "lucide-react";
 import {
@@ -41,8 +42,15 @@ export function SiteFooter({
   );
 
   return (
-    <footer className="border-t border-border bg-surface mt-auto">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+    <footer className="relative overflow-hidden border-t border-border bg-surface mt-auto">
+      {/* Background geometric wireframe clusters with glowing dots */}
+      <HexWireframeClusters
+        variant="all"
+        strokeWidth={0.65}
+        className="absolute inset-0 z-0 pointer-events-none opacity-20 dark:opacity-35"
+      />
+
+      <div className="relative z-10 mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         {/* Top row */}
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
           {/* Triple hex cluster + tagline */}

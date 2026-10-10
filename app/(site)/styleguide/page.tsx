@@ -12,6 +12,7 @@ import { Hex } from "@/components/hex/hex";
 import { HexButton } from "@/components/hex/hex-button";
 import { HexChip } from "@/components/hex/hex-chip";
 import { HexGrid } from "@/components/hex/hex-grid";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 import { SkeletonHex } from "@/components/hex/skeleton-hex";
 import { ThemeToggle } from "@/components/hex/theme-toggle";
 
@@ -222,6 +223,28 @@ export default function StyleguidePage() {
               Decorative Hex Grid
             </h3>
             <HexGrid rows={2} cols={5} cellSize={32} interactive className="h-32 border border-border bg-background" />
+          </div>
+
+          <div className="border border-border bg-surface p-6 space-y-4 md:col-span-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                Interconnected Hexagonal Wireframe Clusters Asset
+              </h3>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-primary">
+                True Circle Glowing Dots · Hollow Shapes · No Gradients
+              </span>
+            </div>
+            <div className="relative h-64 border border-border bg-background overflow-hidden flex items-center justify-center">
+              <HexWireframeClusters variant="all" strokeWidth={0.65} className="absolute inset-0 w-full h-full" />
+              <div className="relative z-10 text-center pointer-events-none p-4 bg-surface/70 border border-border backdrop-blur-xs max-w-sm">
+                <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-foreground font-bold">
+                  The Hive Wireframe Asset
+                </p>
+                <p className="font-mono text-[10px] text-muted-foreground mt-1">
+                  Responsive desktop & mobile clusters framing empty space positions
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

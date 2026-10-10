@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { BrandLogoMark } from "@/components/hex/brand-logo-mark";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 
 /**
  * HexLoader — first-visit only intro animation.
@@ -77,7 +78,7 @@ export function HexLoader({ tagline = "The Hive" }: { tagline?: string }) {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 z-[9998] flex flex-col items-center justify-center bg-background"
+      className="fixed inset-0 z-[9998] flex flex-col items-center justify-center bg-background overflow-hidden"
       style={{
         opacity: phase === "exit" ? 0 : 1,
         transform: phase === "exit" ? "scale(1.04)" : "scale(1)",
@@ -85,8 +86,16 @@ export function HexLoader({ tagline = "The Hive" }: { tagline?: string }) {
         pointerEvents: visible ? "all" : "none",
       }}
     >
+      {/* Background geometric wireframe clusters with glowing dots */}
+      <HexWireframeClusters
+        variant="all"
+        strokeWidth={0.65}
+        className="absolute inset-0 z-0 pointer-events-none opacity-40 dark:opacity-60"
+      />
+
       {/* Logo */}
       <div
+        className="relative z-10"
         style={{
           opacity: phase === "logo" ? (visible ? 1 : 0) : 1,
           transform: phase === "logo" ? (visible ? "scale(1)" : "scale(0.4)") : "scale(1)",
@@ -103,7 +112,7 @@ export function HexLoader({ tagline = "The Hive" }: { tagline?: string }) {
 
       {/* Tagline typewriter */}
       <div
-        className="mt-6 h-7 overflow-hidden"
+        className="relative z-10 mt-6 h-7 overflow-hidden"
         style={{
           opacity: phase === "tagline" || phase === "exit" ? 1 : 0,
           transition: "opacity 300ms",

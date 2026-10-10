@@ -14,6 +14,7 @@ import { ArticleShareButtons } from "@/components/site/article-share-buttons";
 import { ArticleAuthorCard } from "@/components/site/article-author-card";
 import { ArticleSeriesNav } from "@/components/site/article-series-nav";
 import { ArticleFooterNav } from "@/components/site/article-footer-nav";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -112,18 +113,26 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {/* Center Column: 68ch Reading Room */}
             <article className="lg:col-span-9 max-w-[68ch] mx-auto w-full">
               {/* Header Strip */}
-              <header className="space-y-4 mb-10 pb-8 border-b border-border">
-                {/* Series Badge (if part of series) */}
-                {seriesInfo && (
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 text-xs font-mono bg-primary/10 text-primary border border-primary/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span>
-                      {seriesInfo.title} · Part {article.seriesPart || 1}
-                    </span>
-                  </div>
-                )}
+              <header className="relative overflow-hidden space-y-4 mb-10 pb-8 border-b border-border">
+                {/* Background geometric wireframe clusters with glowing dots */}
+                <HexWireframeClusters
+                  variant="all"
+                  strokeWidth={0.65}
+                  className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35"
+                />
 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.15]">
+                <div className="relative z-10 space-y-4">
+                  {/* Series Badge (if part of series) */}
+                  {seriesInfo && (
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1 text-xs font-mono bg-primary/10 text-primary border border-primary/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span>
+                        {seriesInfo.title} · Part {article.seriesPart || 1}
+                      </span>
+                    </div>
+                  )}
+
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.15]">
                   {article.title}
                 </h1>
 
@@ -158,7 +167,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     </>
                   )}
                 </div>
-              </header>
+              </div>
+            </header>
 
               {/* Mobile Table of Contents (collapsible / compact) */}
               {toc.length > 0 && (

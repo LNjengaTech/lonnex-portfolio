@@ -4,6 +4,7 @@ import { Rss } from "lucide-react";
 import { getPublishedArticles, getPublishedTags } from "@/lib/db/queries/articles";
 import { getSiteSettings } from "@/lib/db/queries/settings";
 import { JournalFilterList } from "@/components/site/journal-filter-list";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 
 export const revalidate = 3600; // 1h ISR fallback, on-demand revalidation via 'articles' tag
 
@@ -32,8 +33,15 @@ export default async function JournalPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* ── Journal Header ─────────────────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pt-16 sm:pt-20 pb-8 md:pt-28 md:pb-12 max-w-5xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-border pb-8">
+      <section className="relative overflow-hidden px-4 sm:px-6 pt-16 sm:pt-20 pb-8 md:pt-28 md:pb-12 max-w-5xl mx-auto">
+        {/* Background geometric wireframe clusters with glowing dots */}
+        <HexWireframeClusters
+          variant="all"
+          strokeWidth={0.65}
+          className="absolute inset-0 z-0 pointer-events-none opacity-30 dark:opacity-45"
+        />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-border pb-8">
           <div className="space-y-3">
             <p className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.25em] text-primary font-semibold">
               The Archive · Essays & Notes

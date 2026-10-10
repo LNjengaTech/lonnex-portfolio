@@ -20,6 +20,7 @@ import { HexChip } from "@/components/hex/hex-chip";
 import { CloudVideo } from "@/components/site/cloud-video";
 import { ProjectGalleryLightbox } from "@/components/site/project-gallery-lightbox";
 import { ProjectNextHex } from "@/components/site/project-next-hex";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 import { HEX_CLIP_PATH, calcHexWidth } from "@/lib/hex";
 import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 import { cn } from "@/lib/utils";
@@ -103,8 +104,15 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
 
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
         {/* ── Hero Section ── */}
-        <section aria-label="Project hero" className="pb-12 border-b border-border">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <section aria-label="Project hero" className="relative overflow-hidden pb-12 border-b border-border">
+          {/* Background geometric wireframe clusters with glowing dots */}
+          <HexWireframeClusters
+            variant="all"
+            strokeWidth={0.65}
+            className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-40"
+          />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Hero Left: Category, Role, Title, Summary, Actions */}
             <div className="lg:col-span-7 flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2">

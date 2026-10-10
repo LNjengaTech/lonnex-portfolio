@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 1050" width="100%" height="100%" fill="none">
+  <!-- Minimalist Geometric UI Asset: Left Hexagonal Wireframe Cluster -->
+  <!-- Brand: The Hive / Lonnex Njenga -->
+  <defs>
+    <filter id="dot-glow-left" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <style>
+      .wireframe-stroke {
+        stroke: #0066FF;
+        stroke-width: 0.65px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+      .wireframe-thin {
+        stroke: #0066FF;
+        stroke-width: 0.45px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        opacity: 0.7;
+      }
+      .vertex-dot-glow {
+        fill: #0066FF;
+        filter: url(#dot-glow-left);
+      }
+      .vertex-dot-halo {
+        fill: #0066FF;
+        opacity: 0.3;
+      }
+    </style>
+  </defs>
+
+  <g transform="translate(40, 20)">
+    <!-- Hex L_Main -->
+    <polygon points="370,330 534.54,425 534.54,615 370,710 205.46,615 205.46,425" class="wireframe-stroke" />
+
+    <!-- Hex L_UpperRight -->
+    <polygon points="534.54,45 699.08,140 699.08,330 534.54,425 370,330 370,140" class="wireframe-stroke" />
+
+    <!-- Hex L_LowerLeft -->
+    <polygon points="205.46,615 370,710 370,900 205.46,995 40.92,900 40.92,710" class="wireframe-stroke" />
+
+    <!-- Hex L_West -->
+    <polygon points="40.92,330 205.46,425 205.46,615 40.92,710 -123.62,615 -123.62,425" class="wireframe-stroke" />
+
+    <!-- Architectural Connective Lines -->
+    <line x1="534.54" y1="45" x2="370" y2="140" class="wireframe-thin" />
+    <line x1="699.08" y1="330" x2="534.54" y2="425" class="wireframe-thin" />
+    <line x1="40.92" y1="900" x2="205.46" y2="995" class="wireframe-thin" />
+
+    <!-- Glowing Vertex Dots (True Circles) at Shared Vertices -->
+    <circle cx="370" cy="330" r="3.6" class="vertex-dot-halo" />
+    <circle cx="370" cy="330" r="2.1" class="vertex-dot-glow" />
+
+    <circle cx="534.54" cy="425" r="3.6" class="vertex-dot-halo" />
+    <circle cx="534.54" cy="425" r="2.1" class="vertex-dot-glow" />
+
+    <circle cx="205.46" cy="425" r="3.6" class="vertex-dot-halo" />
+    <circle cx="205.46" cy="425" r="2.1" class="vertex-dot-glow" />
+
+    <circle cx="205.46" cy="615" r="4.2" class="vertex-dot-halo" />
+    <circle cx="205.46" cy="615" r="2.3" class="vertex-dot-glow" />
+
+    <circle cx="370" cy="710" r="3.6" class="vertex-dot-halo" />
+    <circle cx="370" cy="710" r="2.1" class="vertex-dot-glow" />
+
+    <circle cx="40.92" cy="710" r="3.6" class="vertex-dot-halo" />
+    <circle cx="40.92" cy="710" r="2.1" class="vertex-dot-glow" />
+
+    <circle cx="534.54" cy="45" r="3.6" class="vertex-dot-halo" />
+    <circle cx="534.54" cy="45" r="2.1" class="vertex-dot-glow" />
+
+    <circle cx="699.08" cy="140" r="3.1" class="vertex-dot-halo" />
+    <circle cx="699.08" cy="140" r="1.8" class="vertex-dot-glow" />
+
+    <circle cx="205.46" cy="995" r="3.1" class="vertex-dot-halo" />
+    <circle cx="205.46" cy="995" r="1.8" class="vertex-dot-glow" />
+
+    <circle cx="40.92" cy="330" r="3.1" class="vertex-dot-halo" />
+    <circle cx="40.92" cy="330" r="1.8" class="vertex-dot-glow" />
+  </g>
+</svg>

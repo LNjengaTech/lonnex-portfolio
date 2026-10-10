@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CloudImage } from "@/components/site/cloud-image";
 import { HiveCell, HiveCellData } from "@/components/site/hive-cell";
 import { HexGrid } from "@/components/hex/hex-grid";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { cn } from "@/lib/utils";
 
@@ -117,11 +118,17 @@ export function HiveHome({
 
       {/* ── Main Honeycomb Section ───────────────────────────────────────── */}
       <section
-        className="flex flex-1 flex-col items-center justify-center pt-8 pb-12 px-4 sm:px-6 lg:px-8"
+        className="relative flex flex-1 flex-col items-center justify-center pt-8 pb-12 px-4 sm:px-6 lg:px-8"
         aria-label="Hive home"
       >
+        {/* Minimalist geometric wireframe clusters in empty space positions */}
+        <HexWireframeClusters
+          mounted={mounted}
+          className="absolute inset-0 z-0 pointer-events-none opacity-85 dark:opacity-100"
+        />
+
         {/* Name headline */}
-        <div className="text-center mb-6 sm:mb-8">
+        <div className="relative z-10 text-center mb-6 sm:mb-8">
           <p className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.35em] text-muted-foreground mb-2">
             The Hive
           </p>
@@ -138,7 +145,7 @@ export function HiveHome({
         </div>
 
         {/* ── MOBILE VIEW (< 640px): Interlocking Vertical Zig-Zag ───────── */}
-        <div className="block sm:hidden w-full max-w-[280px] mx-auto my-4">
+        <div className="relative z-10 block sm:hidden w-full max-w-[280px] mx-auto my-4">
           <MobileInterlockingHive
             cells={roomCells}
             photoUrl={profilePhotoUrl}
@@ -148,7 +155,7 @@ export function HiveHome({
         </div>
 
         {/* ── TABLET & DESKTOP (≥ 640px): 7-Hex Mathematical Honeycomb ───── */}
-        <div className="hidden sm:flex items-center justify-center my-6">
+        <div className="relative z-10 hidden sm:flex items-center justify-center my-6">
           <DesktopHoneycombCluster
             cells={roomCells}
             photoUrl={profilePhotoUrl}
@@ -160,7 +167,7 @@ export function HiveHome({
         </div>
 
         {/* Dynamic Room Banner / Headline on Hover (Desktop) */}
-        <div className="hidden sm:flex h-8 items-center justify-center mt-2">
+        <div className="relative z-10 hidden sm:flex h-8 items-center justify-center mt-2">
           {hoveredRoom ? (
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-primary transition-opacity animate-in fade-in duration-200">
               [ {hoveredRoom} ]
@@ -175,7 +182,7 @@ export function HiveHome({
         {/* Hero tagline */}
         <p
           className={cn(
-            "mt-4 sm:mt-6 max-w-xl text-center font-mono text-xs sm:text-sm leading-relaxed text-muted-foreground uppercase tracking-[0.2em] px-4",
+            "relative z-10 mt-4 sm:mt-6 max-w-xl text-center font-mono text-xs sm:text-sm leading-relaxed text-muted-foreground uppercase tracking-[0.2em] px-4",
             mounted ? "opacity-100" : "opacity-0",
             "transition-opacity duration-1000 delay-500"
           )}

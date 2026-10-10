@@ -1,12 +1,20 @@
 import Link from "next/link";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { BrandLogoMark } from "@/components/hex/brand-logo-mark";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[80vh] flex-col items-center justify-center gap-8 px-4 text-center">
+    <div className="relative overflow-hidden flex min-h-[80vh] flex-col items-center justify-center gap-8 px-4 text-center">
+      {/* Background geometric wireframe clusters with glowing dots */}
+      <HexWireframeClusters
+        variant="all"
+        strokeWidth={0.65}
+        className="absolute inset-0 z-0 pointer-events-none opacity-35 dark:opacity-50"
+      />
+
       {/* Broken hex visual */}
-      <div className="relative" aria-hidden="true">
+      <div className="relative z-10" aria-hidden="true">
         {/* Outer broken hex — offset, lower opacity */}
         <div
           className="absolute"
@@ -30,7 +38,7 @@ export default function NotFound() {
       </div>
 
       {/* Error code */}
-      <div className="space-y-2">
+      <div className="relative z-10 space-y-2">
         <p className="font-mono text-xs uppercase tracking-[0.4em] text-muted-foreground">
           cell not found
         </p>
@@ -45,7 +53,7 @@ export default function NotFound() {
       {/* Back home */}
       <Link
         href="/"
-        className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-primary hover:text-foreground transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
+        className="relative z-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-primary hover:text-foreground transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
       >
         ← Return to the hive
       </Link>

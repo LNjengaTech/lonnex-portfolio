@@ -14,6 +14,7 @@ import { SkillsHive } from "@/components/site/skills-hive";
 import { ExperienceChain } from "@/components/site/experience-chain";
 import { ServicesGrid } from "@/components/site/services-grid";
 import { TestimonialsRail } from "@/components/site/testimonials-rail";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 
 export const revalidate = 3600;
 
@@ -42,8 +43,15 @@ export default async function AboutPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* ── 1. Hero & Story ─────────────────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pt-16 sm:pt-20 pb-16 md:pt-28 md:pb-20 max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+      <section className="relative overflow-hidden px-4 sm:px-6 pt-16 sm:pt-20 pb-16 md:pt-28 md:pb-20 max-w-5xl mx-auto">
+        {/* Background geometric wireframe clusters with glowing dots */}
+        <HexWireframeClusters
+          variant="all"
+          strokeWidth={0.65}
+          className="absolute inset-0 z-0 pointer-events-none opacity-30 dark:opacity-45"
+        />
+
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Photo in layered offset hexes */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-56 h-64 sm:w-64 sm:h-72">

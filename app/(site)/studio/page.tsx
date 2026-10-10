@@ -6,6 +6,7 @@ import {
   getPublishedStudioItems,
 } from "@/lib/db/queries/studio";
 import { StudioWall } from "@/components/site/studio-wall";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
@@ -29,8 +30,15 @@ export default async function StudioPage() {
       aria-label="Studio — design wall"
     >
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pt-16 sm:pt-20 pb-6 sm:pb-8 md:pt-28 md:pb-12 max-w-screen-2xl mx-auto">
-        <div className="flex flex-col gap-2">
+      <section className="relative overflow-hidden px-4 sm:px-6 pt-16 sm:pt-20 pb-6 sm:pb-8 md:pt-28 md:pb-12 max-w-screen-2xl mx-auto">
+        {/* Background geometric wireframe clusters with glowing dots */}
+        <HexWireframeClusters
+          variant="all"
+          strokeWidth={0.65}
+          className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-40"
+        />
+
+        <div className="relative z-10 flex flex-col gap-2">
           <p className="text-[11px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium">
             Studio
           </p>

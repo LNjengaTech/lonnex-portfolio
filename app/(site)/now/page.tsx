@@ -10,6 +10,7 @@ import {
 import { NairobiLiveClock } from "@/components/site/nairobi-live-clock";
 import { HexProgressRing } from "@/components/site/hex-progress-ring";
 import { BuildLogTimeline } from "@/components/site/build-log-timeline";
+import { HexWireframeClusters } from "@/components/hex/hex-wireframe-clusters";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 60; // frequent revalidation for live now page
@@ -41,8 +42,15 @@ export default async function NowPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* ── 1. Header ─────────────────────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pt-16 sm:pt-20 pb-12 md:pt-28 md:pb-16 max-w-5xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-border pb-8">
+      <section className="relative overflow-hidden px-4 sm:px-6 pt-16 sm:pt-20 pb-12 md:pt-28 md:pb-16 max-w-5xl mx-auto space-y-6">
+        {/* Background geometric wireframe clusters with glowing dots */}
+        <HexWireframeClusters
+          variant="all"
+          strokeWidth={0.65}
+          className="absolute inset-0 z-0 pointer-events-none opacity-30 dark:opacity-45"
+        />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-border pb-8">
           <div className="space-y-3">
             <p className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.25em] text-primary font-semibold">
               Real-Time Pulse · /now

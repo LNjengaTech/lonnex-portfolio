@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" fill="none">
+  <!-- Minimalist Geometric UI Design Asset: Interconnected Hexagonal Wireframe Outlines -->
+  <!-- Brand: The Hive / Lonnex Njenga -->
+  <!-- Aesthetics: Very thin primary blue stroke lines, hollow shapes, dark neon blue accents, transparent background, true circular glowing dots at shared vertices -->
+  <defs>
+    <!-- True-circle glow filter (no gradients used) -->
+    <filter id="dot-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <style>
+      .wireframe-stroke {
+        stroke: #0066FF;
+        stroke-width: 0.65px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+      .wireframe-thin {
+        stroke: #0066FF;
+        stroke-width: 0.45px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        opacity: 0.7;
+      }
+      .vertex-dot-glow {
+        fill: #0066FF;
+        filter: url(#dot-glow);
+      }
+      .vertex-dot-halo {
+        fill: #0066FF;
+        opacity: 0.3;
+      }
+      .vertex-dot-core {
+        fill: #0066FF;
+      }
+    </style>
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- LEFT CLUSTER: Interconnected Hexagonal Wireframe Outlines               -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <g id="cluster-left" class="wireframe-cluster">
+    <!-- Hex L_Main: Center (370, 520), R = 190 -->
+    <!-- Points: 370,330 534.54,425 534.54,615 370,710 205.46,615 205.46,425 -->
+    <polygon points="370,330 534.54,425 534.54,615 370,710 205.46,615 205.46,425" class="wireframe-stroke" />
+
+    <!-- Hex L_UpperRight: Center (534.54, 235), R = 190 -->
+    <!-- Points: 534.54,45 699.08,140 699.08,330 534.54,425 370,330 370,140 -->
+    <!-- Shared edge with L_Main: (370,330) to (534.54,425) -->
+    <polygon points="534.54,45 699.08,140 699.08,330 534.54,425 370,330 370,140" class="wireframe-stroke" />
+
+    <!-- Hex L_LowerLeft: Center (205.46, 805), R = 190 -->
+    <!-- Points: 205.46,615 370,710 370,900 205.46,995 40.92,900 40.92,710 -->
+    <!-- Shared edge with L_Main: (205.46,615) to (370,710) -->
+    <polygon points="205.46,615 370,710 370,900 205.46,995 40.92,900 40.92,710" class="wireframe-stroke" />
+
+    <!-- Hex L_West: Center (40.92, 520), R = 190 -->
+    <!-- Points: 40.92,330 205.46,425 205.46,615 40.92,710 -123.62,615 -123.62,425 -->
+    <!-- Shared edges: with L_Main (205.46,425)-(205.46,615) and with L_LowerLeft (205.46,615)-(40.92,710) -->
+    <polygon points="40.92,330 205.46,425 205.46,615 40.92,710 -123.62,615 -123.62,425" class="wireframe-stroke" />
+
+    <!-- Subtle Architectural Connective Wireframe Rays / Guides -->
+    <line x1="534.54" y1="45" x2="370" y2="140" class="wireframe-thin" />
+    <line x1="699.08" y1="330" x2="534.54" y2="425" class="wireframe-thin" />
+    <line x1="40.92" y1="900" x2="205.46" y2="995" class="wireframe-thin" />
+
+    <!-- Left Cluster Glowing Vertex Dots (True Circles) -->
+    <!-- Shared Vertex 1: L_Main & L_UpperRight (370, 330) -->
+    <circle cx="370" cy="330" r="3.6" class="vertex-dot-halo" />
+    <circle cx="370" cy="330" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 2: L_Main & L_UpperRight (534.54, 425) -->
+    <circle cx="534.54" cy="425" r="3.6" class="vertex-dot-halo" />
+    <circle cx="534.54" cy="425" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 3: L_Main & L_West (205.46, 425) -->
+    <circle cx="205.46" cy="425" r="3.6" class="vertex-dot-halo" />
+    <circle cx="205.46" cy="425" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Triple Shared Vertex 4: L_Main, L_West & L_LowerLeft (205.46, 615) -->
+    <circle cx="205.46" cy="615" r="4.2" class="vertex-dot-halo" />
+    <circle cx="205.46" cy="615" r="2.3" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 5: L_Main & L_LowerLeft (370, 710) -->
+    <circle cx="370" cy="710" r="3.6" class="vertex-dot-halo" />
+    <circle cx="370" cy="710" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 6: L_West & L_LowerLeft (40.92, 710) -->
+    <circle cx="40.92" cy="710" r="3.6" class="vertex-dot-halo" />
+    <circle cx="40.92" cy="710" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Upper Apex Vertex (534.54, 45) -->
+    <circle cx="534.54" cy="45" r="3.6" class="vertex-dot-halo" />
+    <circle cx="534.54" cy="45" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Right Outer Apex (699.08, 140) -->
+    <circle cx="699.08" cy="140" r="3.1" class="vertex-dot-halo" />
+    <circle cx="699.08" cy="140" r="1.8" class="vertex-dot-glow" />
+
+    <!-- Bottom Apex (205.46, 995) -->
+    <circle cx="205.46" cy="995" r="3.1" class="vertex-dot-halo" />
+    <circle cx="205.46" cy="995" r="1.8" class="vertex-dot-glow" />
+
+    <!-- Left Outer Vertex (40.92, 330) -->
+    <circle cx="40.92" cy="330" r="3.1" class="vertex-dot-halo" />
+    <circle cx="40.92" cy="330" r="1.8" class="vertex-dot-glow" />
+  </g>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- RIGHT CLUSTER: Interconnected Hexagonal Wireframe Outlines              -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <g id="cluster-right" class="wireframe-cluster">
+    <!-- Hex R_Main: Center (1550, 520), R = 190 -->
+    <!-- Points: 1550,330 1714.54,425 1714.54,615 1550,710 1385.46,615 1385.46,425 -->
+    <polygon points="1550,330 1714.54,425 1714.54,615 1550,710 1385.46,615 1385.46,425" class="wireframe-stroke" />
+
+    <!-- Hex R_UpperLeft: Center (1385.46, 235), R = 190 -->
+    <!-- Points: 1385.46,45 1550,140 1550,330 1385.46,425 1220.92,330 1220.92,140 -->
+    <!-- Shared edge with R_Main: (1385.46,425) to (1550,330) -->
+    <polygon points="1385.46,45 1550,140 1550,330 1385.46,425 1220.92,330 1220.92,140" class="wireframe-stroke" />
+
+    <!-- Hex R_LowerRight: Center (1714.54, 805), R = 190 -->
+    <!-- Points: 1714.54,615 1879.08,710 1879.08,900 1714.54,995 1550,900 1550,710 -->
+    <!-- Shared edge with R_Main: (1550,710) to (1714.54,615) -->
+    <polygon points="1714.54,615 1879.08,710 1879.08,900 1714.54,995 1550,900 1550,710" class="wireframe-stroke" />
+
+    <!-- Hex R_East: Center (1879.08, 520), R = 190 -->
+    <!-- Points: 1879.08,330 2043.62,425 2043.62,615 1879.08,710 1714.54,615 1714.54,425 -->
+    <!-- Shared edges: with R_Main (1714.54,425)-(1714.54,615) and with R_LowerRight (1714.54,615)-(1879.08,710) -->
+    <polygon points="1879.08,330 2043.62,425 2043.62,615 1879.08,710 1714.54,615 1714.54,425" class="wireframe-stroke" />
+
+    <!-- Subtle Architectural Connective Wireframe Rays / Guides -->
+    <line x1="1385.46" y1="45" x2="1550" y2="140" class="wireframe-thin" />
+    <line x1="1220.92" y1="330" x2="1385.46" y2="425" class="wireframe-thin" />
+    <line x1="1714.54" y1="995" x2="1879.08" y2="900" class="wireframe-thin" />
+
+    <!-- Right Cluster Glowing Vertex Dots (True Circles) -->
+    <!-- Shared Vertex 1: R_Main & R_UpperLeft (1550, 330) -->
+    <circle cx="1550" cy="330" r="3.6" class="vertex-dot-halo" />
+    <circle cx="1550" cy="330" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 2: R_Main & R_UpperLeft (1385.46, 425) -->
+    <circle cx="1385.46" cy="425" r="3.6" class="vertex-dot-halo" />
+    <circle cx="1385.46" cy="425" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 3: R_Main & R_East (1714.54, 425) -->
+    <circle cx="1714.54" cy="425" r="3.6" class="vertex-dot-halo" />
+    <circle cx="1714.54" cy="425" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Triple Shared Vertex 4: R_Main, R_East & R_LowerRight (1714.54, 615) -->
+    <circle cx="1714.54" cy="615" r="4.2" class="vertex-dot-halo" />
+    <circle cx="1714.54" cy="615" r="2.3" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 5: R_Main & R_LowerRight (1550, 710) -->
+    <circle cx="1550" cy="710" r="3.6" class="vertex-dot-halo" />
+    <circle cx="1550" cy="710" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Shared Vertex 6: R_East & R_LowerRight (1879.08, 710) -->
+    <circle cx="1879.08" cy="710" r="3.6" class="vertex-dot-halo" />
+    <circle cx="1879.08" cy="710" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Upper Apex Vertex (1385.46, 45) -->
+    <circle cx="1385.46" cy="45" r="3.6" class="vertex-dot-halo" />
+    <circle cx="1385.46" cy="45" r="2.1" class="vertex-dot-glow" />
+
+    <!-- Inner Apex near hive (1220.92, 330) -->
+    <circle cx="1220.92" cy="330" r="3.1" class="vertex-dot-halo" />
+    <circle cx="1220.92" cy="330" r="1.8" class="vertex-dot-glow" />
+
+    <!-- Bottom Apex (1714.54, 995) -->
+    <circle cx="1714.54" cy="995" r="3.1" class="vertex-dot-halo" />
+    <circle cx="1714.54" cy="995" r="1.8" class="vertex-dot-glow" />
+
+    <!-- Right Outer Apex (1879.08, 330) -->
+    <circle cx="1879.08" cy="330" r="3.1" class="vertex-dot-halo" />
+    <circle cx="1879.08" cy="330" r="1.8" class="vertex-dot-glow" />
+  </g>
+</svg>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, Clock, Calendar, ArrowUpRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChamferFrame } from "@/components/hex/chamfer-frame";
+import { HexEmptyState } from "@/components/hex/hex-empty-state";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 
 interface Tag {
@@ -180,23 +181,23 @@ export function JournalFilterList({ articles, tags }: JournalFilterListProps) {
       {/* ── Typographic Article List ────────────────────────────────────────── */}
       <section aria-label="Articles list" className="space-y-4">
         {listArticles.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-border bg-surface/50">
-            <span className="text-3xl opacity-30">⬡</span>
-            <p className="text-sm text-muted-foreground mt-3">
-              No articles match your criteria.
-            </p>
-            {(query || selectedTag) && (
-              <button
-                onClick={() => {
-                  setQuery("");
-                  setSelectedTag(null);
-                }}
-                className="mt-4 text-xs text-primary underline underline-offset-4"
-              >
-                Clear all filters
-              </button>
-            )}
-          </div>
+          <HexEmptyState
+            title="No articles match criteria"
+            message="No technical essays or notes match the active query or tag."
+            action={
+              (query || selectedTag) && (
+                <button
+                  onClick={() => {
+                    setQuery("");
+                    setSelectedTag(null);
+                  }}
+                  className="font-mono text-xs uppercase tracking-wider text-primary hover:text-foreground underline underline-offset-4"
+                >
+                  Clear all filters
+                </button>
+              )
+            }
+          />
         ) : (
           <div className="divide-y divide-border border-y border-border">
             {listArticles.map((art, idx) => {

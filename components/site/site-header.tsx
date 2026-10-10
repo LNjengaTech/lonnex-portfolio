@@ -57,7 +57,7 @@ export function SiteHeader({
               <Link
                 key={href}
                 href={href}
-                className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
+                className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:text-foreground"
               >
                 {navLabels[key as keyof typeof navLabels] ?? def}
               </Link>

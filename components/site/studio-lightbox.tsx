@@ -17,6 +17,7 @@ export function StudioLightbox({ items, initialIndex, onClose }: StudioLightboxP
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const item = items[index];
   const isVideo = item.mediaType === "video";
@@ -45,6 +46,11 @@ export function StudioLightbox({ items, initialIndex, onClose }: StudioLightboxP
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose, goNext, goPrev]);
+
+  // Focus trap: move focus into the dialog when it opens
+  useEffect(() => {
+    setTimeout(() => closeButtonRef.current?.focus(), 50);
+  }, []);
 
   // Touch swipe
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -81,6 +87,7 @@ export function StudioLightbox({ items, initialIndex, onClose }: StudioLightboxP
     >
       {/* Close */}
       <button
+        ref={closeButtonRef}
         onClick={onClose}
         className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 p-2 sm:p-2.5 rounded-full bg-surface/90 backdrop-blur-sm text-muted-foreground hover:text-foreground border border-border transition-colors"
         aria-label="Close lightbox"

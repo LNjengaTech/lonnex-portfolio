@@ -13,6 +13,8 @@ import { CloudVideo } from "@/components/site/cloud-video";
 import { StudioLightbox } from "@/components/site/studio-lightbox";
 import { StudioCollectionPile } from "@/components/site/studio-collection-pile";
 import { StudioFilterChips } from "@/components/site/studio-filter-chips";
+import { HexEmptyState } from "@/components/hex/hex-empty-state";
+import { SkeletonHex } from "@/components/hex/skeleton-hex";
 import { buildStudioLayout } from "@/lib/studio-layout";
 import type { StudioItemInput, StudioLayoutItem } from "@/lib/studio-layout";
 import { cn } from "@/lib/utils";
@@ -33,7 +35,7 @@ export function StudioWall({ items, categories, collections }: StudioWallProps) 
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [lightboxItems, setLightboxItems] = useState<StudioLayoutItem[] | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(960);
+  const [containerWidth, setContainerWidth] = useState(0);
   const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -132,7 +134,18 @@ export function StudioWall({ items, categories, collections }: StudioWallProps) 
       />
 
       <div ref={containerRef} className="relative w-full">
-        {containerWidth === 0 ? null : layout.isMobile ? (
+        {containerWidth === 0 ? (
+          <div className="flex items-center justify-center gap-3 py-16" aria-hidden="true">
+            <SkeletonHex height={64} className="opacity-30" />
+            <SkeletonHex height={80} className="opacity-60" />
+            <SkeletonHex height={64} className="opacity-30" />
+          </div>
+        ) : filteredItems.length === 0 ? (
+          <HexEmptyState
+            title="No works found"
+            message="No commercial design pieces found in this category."
+          />
+        ) : layout.isMobile ? (
           /* ── MOBILE LAYOUT: Horizontal rail for tall items + Full-width rows ── */
           <div className="flex flex-col gap-6 w-full">
             {/* 1. Tall Rail (Rollups & Posters) as swipeable horizontal carousel */}

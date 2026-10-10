@@ -86,6 +86,7 @@ export function ArticleToc({ items }: ArticleTocProps) {
               {/* Heading link */}
               <a
                 href={`#${item.id}`}
+                aria-current={isActive ? "location" : undefined}
                 onClick={(e) => {
                   e.preventDefault();
                   const target = document.getElementById(item.id);

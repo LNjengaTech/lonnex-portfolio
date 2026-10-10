@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 9
+**Current phase:** 10
 
 ## Phases
 - [x] 0 Foundation
@@ -15,10 +15,11 @@
 - [x] 8b Public: Studio
 - [x] 8c Public: Journal
 - [x] 8d Public: About, Now, Contact
-- [ ] 9 Polish and performance
+- [x] 9 Polish and performance
 - [ ] 10 SEO and launch
 
 ## Decisions log
+- 2026-10-10: Completed Phase 9 Polish & Performance. Configured full standalone installable PWA via @ducanh2912/next-pwa with offline Service Worker caching, web manifest (`public/manifest.json`), apple-web-app tags, and multi-size launcher icons (48px–512px). Configured `build` and `dev` scripts with `--webpack` and `turbopack: {}` in `next.config.ts` so Workbox plugins run cleanly without Next.js 16 Turbopack conflict. Enforced global `prefers-reduced-motion: reduce` blanket reset across all CSS animations, transitions, and scrolling. Completed accessibility and screen-reader pass: added `aria-modal="true"` and auto-focus trapping to `StudioLightbox`, `RadialMenu`, and `CommandPalette`; added `aria-current="location"` to `ArticleToc`; fixed keyboard outline visibility in `SiteHeader`. Created branded public `app/(site)/loading.tsx` (SkeletonHex cluster) and `app/(site)/error.tsx` (hex warning badge + retry button), plus reusable `<HexEmptyState>` for empty filter states in Work, Studio, and Journal. Optimized Next.js bundle and media performance via AVIF/WebP image formats, deviceSizes, Lucide import tree-shaking, Cloudinary CDN preconnect, and `next/dynamic` code-splitting for CommandPalette and HexCursor.
 - 2026-10-10: Implemented secret PWA and mobile-friendly admin access unified through the Command Palette: accessible via `⌘K` / `Ctrl+K` on desktop and quick-trigger buttons in both `SiteHeader` (search icon) and `RadialMenu` on mobile devices. Entering the secret `>hive` passphrase unlocks the hidden "Enter The Hive" shortcut to `/admin`. Fixed missing tab favicon by crafting brand hexagonal SVG icon (`app/icon.svg`, mirrored to `public/icon.svg`) and binding to root layout metadata.
 - 2026-10-10: Created minimalist geometric UI design asset featuring interconnected hexagonal wireframe clusters (`asset/hex-wireframe-clusters.svg`, `asset/hex-cluster-left.svg`, `asset/hex-cluster-right.svg`, `asset/hex-cluster-mobile.svg`, mirrored to `public/assets/`). Implemented `<HexWireframeClusters>` React component (`components/hex/hex-wireframe-clusters.tsx`) with hollow shapes, ultra-thin hairline strokes (0.65px desktop / 0.55px mobile), dark neon blue accents, transparent background, and proportionally scaled glowing true circular dots (2.1px desktop / 1.5px mobile core) at all shared and key vertices. Integrated site-wide across all public pages (`/`, `/work`, `/work/[slug]`, `/studio`, `/journal`, `/journal/[slug]`, `/about`, `/now`, `/contact`, `/not-found`), including `SiteFooter` and intro `HexLoader`, plus `/styleguide`.
 - 2026-10-09: Implemented Phase 8a Public Work — Honeycomb Wall (packed non-overlapping axial mosaic aware of S/M/L/XL tile sizes on desktop, interlocking vertical zig-zag on mobile), Index view (giant 8vw typography with floating cursor-following hex preview), and Timeline view (horizontal 60-degree zig-zag with connecting axial guideline and year milestones).

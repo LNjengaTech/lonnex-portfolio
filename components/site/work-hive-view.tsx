@@ -3,6 +3,7 @@
 import * as React from "react";
 import { packHoneycomb, calcHexWidth, type HexSize } from "@/lib/hex";
 import { ProjectHexTile } from "@/components/site/project-hex-tile";
+import { HexEmptyState } from "@/components/hex/hex-empty-state";
 import type { PublicProjectItem } from "@/lib/db/queries/projects";
 
 interface WorkHiveViewProps {
@@ -76,9 +77,10 @@ export function WorkHiveView({
 
   if (projects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 text-center text-muted-foreground font-mono text-sm uppercase">
-        No projects found in the Hive.
-      </div>
+      <HexEmptyState
+        title="No projects found"
+        message="No engineering systems or projects found in the Hive."
+      />
     );
   }
 

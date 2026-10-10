@@ -5,9 +5,15 @@ import { getPublishedProjects } from "@/lib/db/queries/public";
 import { getContactMethodsList } from "@/lib/db/queries/contact";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
+import dynamic from "next/dynamic";
 import { HexLoader } from "@/components/site/hex-loader";
-import { HexCursor } from "@/components/site/hex-cursor";
-import { CommandPalette } from "@/components/site/command-palette";
+
+const HexCursor = dynamic(
+  () => import("@/components/site/hex-cursor").then((m) => m.HexCursor)
+);
+const CommandPalette = dynamic(
+  () => import("@/components/site/command-palette").then((m) => m.CommandPalette)
+);
 
 export default async function SiteLayout({
   children,

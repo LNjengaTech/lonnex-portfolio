@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { HEX_CLIP_PATH, calcHexWidth } from "@/lib/hex";
 import { resolveMediaUrl } from "@/lib/cloudinary-utils";
+import { HexEmptyState } from "@/components/hex/hex-empty-state";
 import { cn } from "@/lib/utils";
 import type { PublicProjectItem } from "@/lib/db/queries/projects";
 
@@ -96,7 +97,13 @@ export function WorkIndexView({
       )}
 
       {/* ── Giant Typographic Project List ── */}
-      <div className="flex flex-col divide-y divide-border">
+      {projects.length === 0 ? (
+        <HexEmptyState
+          title="No projects in index"
+          message="No engineering projects match the active criteria."
+        />
+      ) : (
+        <div className="flex flex-col divide-y divide-border">
         {projects.map((p, idx) => {
           const isMatch = matchingProjectIds.has(p.id);
           const numLabel = String(idx + 1).padStart(2, "0");
@@ -177,7 +184,8 @@ export function WorkIndexView({
             </Link>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -31,6 +31,7 @@ interface RadialMenuProps {
 
 export function RadialMenu({ open, onClose }: RadialMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const triggerCommandPalette = () => {
     onClose();
@@ -50,6 +51,13 @@ export function RadialMenu({ open, onClose }: RadialMenuProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [open, onClose]);
 
+  // Focus the close button when the menu opens
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => closeButtonRef.current?.focus(), 50);
+    }
+  }, [open]);
+
   if (!open) return null;
 
   return (
@@ -60,6 +68,7 @@ export function RadialMenu({ open, onClose }: RadialMenuProps) {
         if (e.target === ref.current) onClose();
       }}
       role="dialog"
+      aria-modal="true"
       aria-label="Navigation menu"
     >
       {/* Backdrop */}
@@ -73,6 +82,7 @@ export function RadialMenu({ open, onClose }: RadialMenuProps) {
       <div className="relative z-10 w-[290px] h-[290px] sm:w-[380px] sm:h-[380px] max-w-full max-h-full">
         {/* Close — center cell */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-transform hover:scale-105 active:scale-95"
           aria-label="Close menu"

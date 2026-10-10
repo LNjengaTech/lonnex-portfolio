@@ -138,6 +138,7 @@ export function CommandPalette({ projects = [], articles = [] }: CommandPaletteP
       <div
         className="relative z-10 w-full max-w-lg shadow-2xl border border-border"
         role="dialog"
+        aria-modal="true"
         aria-label="Command palette"
         onKeyDown={(e) => e.key === "Escape" && close()}
       >

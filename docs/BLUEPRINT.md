@@ -187,6 +187,7 @@ Projects are **not cards.** Each one is a hex tile in a honeycomb mosaic, and ti
 | Code highlighting | Shiki |
 | Validation / forms | Zod, React Hook Form, server actions |
 | Email | Resend |
+| PWA | @ducanh2912/next-pwa (standalone installable, service worker, manifest) |
 | Analytics | Umami or Plausible (privacy-friendly) |
 | Hosting | Vercel |
 
@@ -311,7 +312,7 @@ Nice to have later: i18n (English and Swahili), blog comments (or a reaction but
 | **6. Journal admin** | Tiptap editor, .md/.docx import, drafts/scheduling, tags, series | Write one article and import another |
 | **7. Public site: shell and Hive** | Loader, home honeycomb, radial menu, hex cursor, page transitions, command palette | Home feels exactly like the concept |
 | **8. Public rooms** | Work (3 views + case study), Studio wall + lightbox, Journal, About, Now, Contact | All rooms driven by real data |
-| **9. Polish and performance** | Motion tuning, reduced motion, accessibility, mobile pass, Lighthouse | Performance budget met |
+| **9. Polish and performance** | Motion tuning, reduced motion, accessibility, mobile pass, Lighthouse, full standalone installable PWA (@ducanh2912/next-pwa, manifest, icons, offline/service worker) | Performance budget met, PWA installable |
 | **10. SEO, launch** | OG images, sitemap, RSS, analytics, error monitoring, domain, email, backups | Live and indexed |
 
 **Prompt template for each phase:**

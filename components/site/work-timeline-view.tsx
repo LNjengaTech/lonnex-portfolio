@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProjectHexTile } from "@/components/site/project-hex-tile";
+import { HexEmptyState } from "@/components/hex/hex-empty-state";
 import { calcHexWidth } from "@/lib/hex";
 import type { PublicProjectItem } from "@/lib/db/queries/projects";
 
@@ -60,9 +61,10 @@ export function WorkTimelineView({
 
   if (projects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 text-center text-muted-foreground font-mono text-sm uppercase">
-        No projects in timeline.
-      </div>
+      <HexEmptyState
+        title="No projects in timeline"
+        message="No engineering projects recorded across the timeline."
+      />
     );
   }
 

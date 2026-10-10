@@ -60,9 +60,9 @@ export function ArticleReadingProgress({ readingTime }: ArticleReadingProgressPr
               <div
                 key={i}
                 className={cn(
-                  "w-3 h-3.5 transition-all duration-300",
+                  "w-3 h-3.5 motion-safe:transition-all motion-safe:duration-300",
                   isFilled
-                    ? "bg-primary scale-100 shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]"
+                    ? "bg-primary scale-100"
                     : "bg-surface border border-border/80 scale-90 opacity-40"
                 )}
                 style={{ clipPath: HEX_CLIP_PATH }}

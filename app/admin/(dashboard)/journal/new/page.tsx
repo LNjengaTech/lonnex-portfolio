@@ -1,11 +1,16 @@
 import { requireAuth } from "@/lib/auth";
 import { getAllTags, getAllSeries } from "@/lib/db/queries/articles";
+import { getAllMediaAssets } from "@/lib/db/queries/media";
 import { JournalEditor } from "../[id]/journal-editor";
 
 export default async function NewArticlePage() {
   await requireAuth();
 
-  const [tagRows, seriesRows] = await Promise.all([getAllTags(), getAllSeries()]);
+  const [tagRows, seriesRows, mediaRows] = await Promise.all([
+    getAllTags(),
+    getAllSeries(),
+    getAllMediaAssets(),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -31,6 +36,11 @@ export default async function NewArticlePage() {
           slug: s.slug,
           description: s.description ?? null,
           order: s.order,
+        }))}
+        mediaAssets={mediaRows.map((a) => ({
+          ...a,
+          type: a.type as "image" | "video",
+          dominantColor: a.dominantColor ?? undefined,
         }))}
       />
     </div>

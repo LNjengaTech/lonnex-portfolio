@@ -1,5 +1,6 @@
 import { requireAuth } from "@/lib/auth";
 import { getArticleById, getAllTags, getAllSeries } from "@/lib/db/queries/articles";
+import { getAllMediaAssets } from "@/lib/db/queries/media";
 import { JournalEditor } from "./journal-editor";
 
 interface Props {
@@ -10,10 +11,11 @@ export default async function EditArticlePage({ params }: Props) {
   await requireAuth();
   const { id } = await params;
 
-  const [article, tagRows, seriesRows] = await Promise.all([
+  const [article, tagRows, seriesRows, mediaRows] = await Promise.all([
     getArticleById(Number(id)),
     getAllTags(),
     getAllSeries(),
+    getAllMediaAssets(),
   ]);
 
   if (!article) {
@@ -23,6 +25,8 @@ export default async function EditArticlePage({ params }: Props) {
       </div>
     );
   }
+
+  const seoData = article.seo as Record<string, string | null> | null;
 
   return (
     <div className="space-y-6">
@@ -54,10 +58,12 @@ export default async function EditArticlePage({ params }: Props) {
           contentJson: (article.contentJson as Record<string, unknown>) ?? {},
           seriesId: article.seriesId ?? null,
           seriesPart: article.seriesPart ?? null,
-          seo: article.seo
+          seo: seoData
             ? {
-                title: (article.seo as Record<string, string>).title ?? null,
-                description: (article.seo as Record<string, string>).description ?? null,
+                title: seoData.title ?? null,
+                description: seoData.description ?? null,
+                ogImageUrl: seoData.ogImageUrl ?? null,
+                ogSection: seoData.ogSection ?? null,
               }
             : null,
           canonicalUrl: article.canonicalUrl ?? null,
@@ -69,6 +75,11 @@ export default async function EditArticlePage({ params }: Props) {
           slug: s.slug,
           description: s.description ?? null,
           order: s.order,
+        }))}
+        mediaAssets={mediaRows.map((a) => ({
+          ...a,
+          type: a.type as "image" | "video",
+          dominantColor: a.dominantColor ?? undefined,
         }))}
       />
     </div>

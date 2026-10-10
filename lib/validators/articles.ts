@@ -37,6 +37,7 @@ export const articleSeoSchema = z.object({
   title: z.string().max(70).optional().nullable(),
   description: z.string().max(160).optional().nullable(),
   ogImageUrl: z.string().optional().nullable(),
+  ogSection: z.string().max(80).optional().nullable(), // article:section (e.g. "Technology")
 });
 
 export const articleSchema = z.object({

@@ -30,10 +30,16 @@ import {
   CheckCircle2,
   FileEdit,
   ChevronDown,
+  ImagePlus,
+  X,
+  Copy,
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createArticleAction, updateArticleAction } from "../actions";
 import type { ArticleInput } from "@/lib/validators/articles";
+import { MediaPicker, type MediaAsset } from "@/components/admin/media-picker";
+import { resolveMediaUrl } from "@/lib/cloudinary-utils";
 
 const lowlight = createLowlight(common);
 
@@ -52,7 +58,7 @@ interface InitialData {
   contentJson: Record<string, unknown>;
   seriesId: number | null;
   seriesPart: number | null;
-  seo: { title?: string | null; description?: string | null; ogImageUrl?: string | null } | null;
+  seo: { title?: string | null; description?: string | null; ogImageUrl?: string | null; ogSection?: string | null } | null;
   canonicalUrl: string | null;
 }
 
@@ -62,6 +68,7 @@ interface JournalEditorProps {
   initialData?: InitialData;
   allTags: TagItem[];
   allSeries: SeriesItem[];
+  mediaAssets?: MediaAsset[];
 }
 
 function slugify(text: string) {
@@ -83,7 +90,7 @@ const STATUS_OPTIONS: { value: ArticleInput["status"]; label: string; icon: Reac
   { value: "published", label: "Published", icon: CheckCircle2, style: "text-success" },
 ];
 
-export function JournalEditor({ mode, articleId, initialData, allTags, allSeries }: JournalEditorProps) {
+export function JournalEditor({ mode, articleId, initialData, allTags, allSeries, mediaAssets = [] }: JournalEditorProps) {
   const router = useRouter();
 
   const [title, setTitle] = React.useState(initialData?.title ?? "");
@@ -99,6 +106,7 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
   const [canonicalUrl, setCanonicalUrl] = React.useState(initialData?.canonicalUrl ?? "");
   const [seoTitle, setSeoTitle] = React.useState(initialData?.seo?.title ?? "");
   const [seoDesc, setSeoDesc] = React.useState(initialData?.seo?.description ?? "");
+  const [ogSection, setOgSection] = React.useState(initialData?.seo?.ogSection ?? "");
 
   const [saving, setSaving] = React.useState(false);
   const [saveError, setSaveError] = React.useState("");
@@ -106,6 +114,22 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
   const [showPreview, setShowPreview] = React.useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState<"write" | "meta" | "seo">("write");
+  const [showCoverPicker, setShowCoverPicker] = React.useState(false);
+  const [showInlineImagePicker, setShowInlineImagePicker] = React.useState(false);
+  const [copiedLink, setCopiedLink] = React.useState(false);
+
+  const handleCopyPublicLink = async () => {
+    if (!slug) return;
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://lonnex.dev";
+    const url = `${origin}/journal/${slug}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
 
   const autosaveTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -113,6 +137,7 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
     extensions: [
       StarterKit.configure({
         codeBlock: false,
+        link: false,
       }),
       Placeholder.configure({
         placeholder: "Start writing… use /h2, /code, /quote to insert blocks.",
@@ -177,7 +202,7 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
       status,
       publishAt: publishAt || null,
       readingTime,
-      seo: (seoTitle || seoDesc) ? { title: seoTitle || null, description: seoDesc || null } : null,
+      seo: (seoTitle || seoDesc || ogSection) ? { title: seoTitle || null, description: seoDesc || null, ogSection: ogSection || null } : null,
       canonicalUrl: canonicalUrl || null,
       tagIds,
     };
@@ -222,6 +247,7 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
   const StatusIcon = currentStatus.icon;
 
   return (
+    <>
     <div className="flex flex-col xl:flex-row gap-6">
       {/* ── Editor column ─────────────────────────────────────────────────── */}
       <div className="flex-1 min-w-0 space-y-4">
@@ -266,94 +292,110 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
         {/* ── Write tab ──────────────────────────────────────────────────── */}
         {activeTab === "write" && (
           <div className="space-y-3">
-            {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-1 p-2 border border-border bg-surface">
-              {[
-                { icon: Heading2, action: () => editor?.chain().focus().toggleHeading({ level: 2 }).run(), label: "H2", active: () => editor?.isActive("heading", { level: 2 }) ?? false },
-                { icon: Heading3, action: () => editor?.chain().focus().toggleHeading({ level: 3 }).run(), label: "H3", active: () => editor?.isActive("heading", { level: 3 }) ?? false },
-                { icon: Bold, action: () => editor?.chain().focus().toggleBold().run(), label: "Bold", active: () => editor?.isActive("bold") ?? false },
-                { icon: Italic, action: () => editor?.chain().focus().toggleItalic().run(), label: "Italic", active: () => editor?.isActive("italic") ?? false },
-                { icon: Code, action: () => editor?.chain().focus().toggleCode().run(), label: "Inline code", active: () => editor?.isActive("code") ?? false },
-              ].map(({ icon: Icon, action, label, active }) => (
+            {/* Unified Editor Card: Sticky toolbar at top, scrollable content area */}
+            <div className="border border-border bg-background flex flex-col">
+              {/* Pinned Toolbar: always stays visible, never scrolls out of view */}
+              <div className="sticky top-0 z-20 flex flex-wrap items-center gap-1 p-2 border-b border-border bg-surface shadow-sm">
+                {[
+                  { icon: Heading2, action: () => editor?.chain().focus().toggleHeading({ level: 2 }).run(), label: "H2", active: () => editor?.isActive("heading", { level: 2 }) ?? false },
+                  { icon: Heading3, action: () => editor?.chain().focus().toggleHeading({ level: 3 }).run(), label: "H3", active: () => editor?.isActive("heading", { level: 3 }) ?? false },
+                  { icon: Bold, action: () => editor?.chain().focus().toggleBold().run(), label: "Bold", active: () => editor?.isActive("bold") ?? false },
+                  { icon: Italic, action: () => editor?.chain().focus().toggleItalic().run(), label: "Italic", active: () => editor?.isActive("italic") ?? false },
+                  { icon: Code, action: () => editor?.chain().focus().toggleCode().run(), label: "Inline code", active: () => editor?.isActive("code") ?? false },
+                ].map(({ icon: Icon, action, label, active }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={action}
+                    title={label}
+                    className={cn(
+                      "p-1.5 border transition-colors cursor-pointer",
+                      active()
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                    )}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </button>
+                ))}
+                <div className="w-px h-4 bg-border mx-1" />
+                {[
+                  { icon: Quote, action: () => editor?.chain().focus().toggleBlockquote().run(), label: "Blockquote", active: () => editor?.isActive("blockquote") ?? false },
+                  { icon: List, action: () => editor?.chain().focus().toggleBulletList().run(), label: "Bullet list", active: () => editor?.isActive("bulletList") ?? false },
+                  { icon: ListOrdered, action: () => editor?.chain().focus().toggleOrderedList().run(), label: "Ordered list", active: () => editor?.isActive("orderedList") ?? false },
+                  { icon: Minus, action: () => editor?.chain().focus().setHorizontalRule().run(), label: "Divider", active: () => false },
+                  { icon: LinkIcon, action: setLink, label: "Link", active: () => editor?.isActive("link") ?? false },
+                ].map(({ icon: Icon, action, label, active }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={action}
+                    title={label}
+                    className={cn(
+                      "p-1.5 border transition-colors cursor-pointer",
+                      active()
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                    )}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </button>
+                ))}
+                {/* Insert Photo button from media library */}
                 <button
-                  key={label}
                   type="button"
-                  onClick={action}
-                  title={label}
+                  onClick={() => setShowInlineImagePicker(true)}
+                  title="Insert photo from media library"
+                  className="flex items-center gap-1 px-2 py-1 border border-border bg-background text-foreground hover:border-primary transition-colors cursor-pointer text-xs font-mono"
+                >
+                  <ImageIcon className="h-3.5 w-3.5 text-primary" />
+                  <span className="hidden sm:inline text-[10px] uppercase font-bold">Photo</span>
+                </button>
+                <button
+                  type="button"
+                  title="Code block"
+                  onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
                   className={cn(
-                    "p-1.5 border transition-colors cursor-pointer",
-                    active()
+                    "flex items-center gap-1 px-2 py-1 border font-mono text-[10px] uppercase transition-colors cursor-pointer",
+                    editor?.isActive("codeBlock")
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                   )}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  {"{ }"}
                 </button>
-              ))}
-              <div className="w-px h-4 bg-border mx-1" />
-              {[
-                { icon: Quote, action: () => editor?.chain().focus().toggleBlockquote().run(), label: "Blockquote", active: () => editor?.isActive("blockquote") ?? false },
-                { icon: List, action: () => editor?.chain().focus().toggleBulletList().run(), label: "Bullet list", active: () => editor?.isActive("bulletList") ?? false },
-                { icon: ListOrdered, action: () => editor?.chain().focus().toggleOrderedList().run(), label: "Ordered list", active: () => editor?.isActive("orderedList") ?? false },
-                { icon: Minus, action: () => editor?.chain().focus().setHorizontalRule().run(), label: "Divider", active: () => false },
-                { icon: LinkIcon, action: setLink, label: "Link", active: () => editor?.isActive("link") ?? false },
-              ].map(({ icon: Icon, action, label, active }) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={action}
-                  title={label}
-                  className={cn(
-                    "p-1.5 border transition-colors cursor-pointer",
-                    active()
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
-                  )}
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                </button>
-              ))}
-              <button
-                type="button"
-                title="Code block"
-                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-                className={cn(
-                  "flex items-center gap-1 px-2 py-1 border font-mono text-[10px] uppercase transition-colors cursor-pointer",
-                  editor?.isActive("codeBlock")
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
-                )}
-              >
-                {"{ }"}
-              </button>
-            </div>
 
-            {/* Stats bar */}
-            <div className="flex items-center gap-4 text-[10px] font-mono text-muted-foreground">
-              <span>{wordCount} words</span>
-              <span>{readingTime} min read</span>
-              <button
-                type="button"
-                onClick={() => setShowPreview((p) => !p)}
-                className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer ml-auto"
-              >
-                {showPreview ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                {showPreview ? "Hide preview" : "Preview"}
-              </button>
-            </div>
-
-            {showPreview ? (
-              <div
-                className="prose prose-invert max-w-none min-h-64 p-4 border border-border bg-surface text-foreground text-sm leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: editor?.getHTML() ?? "" }}
-              />
-            ) : (
-              <div className="tiptap-editor border border-border bg-background min-h-64 p-4">
-                <EditorContent editor={editor} />
+                {/* Right side in-bar: preview toggle & reading stats */}
+                <div className="ml-auto flex items-center gap-3 text-[10px] font-mono text-muted-foreground">
+                  <span className="hidden sm:inline">{wordCount} words</span>
+                  <span className="hidden sm:inline">·</span>
+                  <span className="hidden sm:inline">{readingTime}m read</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowPreview((p) => !p)}
+                    className="flex items-center gap-1 px-2 py-1 border border-border bg-background hover:text-foreground hover:border-primary transition-colors cursor-pointer text-[10px] uppercase"
+                  >
+                    {showPreview ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                    <span>{showPreview ? "Edit" : "Preview"}</span>
+                  </button>
+                </div>
               </div>
-            )}
+
+              {/* Scrollable writing area: contained inside the box */}
+              {showPreview ? (
+                <div
+                  className="prose prose-invert max-w-none min-h-[520px] max-h-[70vh] overflow-y-auto p-5 bg-surface text-foreground text-sm leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: editor?.getHTML() ?? "" }}
+                />
+              ) : (
+                <div className="tiptap-editor min-h-[520px] max-h-[70vh] overflow-y-auto p-5">
+                  <EditorContent editor={editor} />
+                </div>
+              )}
+            </div>
           </div>
         )}
+
 
         {/* ── Meta tab ──────────────────────────────────────────────────── */}
         {activeTab === "meta" && (
@@ -371,15 +413,47 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
               <span className="font-mono text-[9px] text-muted-foreground">{excerpt.length}/400</span>
             </label>
 
-            <label className="block space-y-1">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground">Cover image URL</span>
-              <input
-                value={coverUrl}
-                onChange={(e) => setCoverUrl(e.target.value)}
-                placeholder="https://res.cloudinary.com/…"
-                className="w-full border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
-              />
-            </label>
+            {/* Cover Image — MediaPicker */}
+            <div className="space-y-1">
+              <span className="font-mono text-[10px] uppercase text-muted-foreground">Cover image</span>
+              {coverUrl ? (
+                <div className="relative border border-border bg-surface group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={coverUrl}
+                    alt="Article cover"
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowCoverPicker(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-background border border-border text-xs font-mono text-foreground hover:border-primary transition-colors cursor-pointer"
+                    >
+                      <ImagePlus className="h-3 w-3" />
+                      Change
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCoverUrl("")}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-background border border-danger/60 text-xs font-mono text-danger hover:border-danger transition-colors cursor-pointer"
+                    >
+                      <X className="h-3 w-3" />
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowCoverPicker(true)}
+                  className="w-full h-32 border border-dashed border-border bg-surface flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <ImagePlus className="h-5 w-5" />
+                  <span className="font-mono text-[10px] uppercase">Pick from media library</span>
+                </button>
+              )}
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <label className="block space-y-1">
@@ -478,8 +552,48 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
               <p className="text-[10px] font-mono text-success">lonnex.dev/journal/{slug || "article-slug"}</p>
               <p className="text-xs text-muted-foreground">{seoDesc || excerpt || "Article excerpt…"}</p>
             </div>
+
+            {/* Open Graph section */}
+            <div className="border-t border-border pt-4 space-y-3">
+              <p className="font-mono text-[10px] uppercase text-muted-foreground">Open Graph (Social Sharing)</p>
+
+              <label className="block space-y-1">
+                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                  article:section <span className="normal-case text-[9px]">(e.g. Technology, Design, Business)</span>
+                </span>
+                <input
+                  value={ogSection}
+                  onChange={(e) => setOgSection(e.target.value)}
+                  maxLength={80}
+                  placeholder="Technology"
+                  className="w-full border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
+                />
+              </label>
+
+              {/* OG Card Preview */}
+              <div className="border border-border bg-background overflow-hidden">
+                <p className="font-mono text-[9px] uppercase text-muted-foreground px-3 pt-3 pb-1.5">OG Card Preview</p>
+                {coverUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={coverUrl} alt="" className="w-full h-28 object-cover" />
+                ) : (
+                  <div className="w-full h-28 bg-surface border-y border-border flex items-center justify-center">
+                    <ImageIcon className="h-6 w-6 text-muted-foreground/30" />
+                  </div>
+                )}
+                <div className="px-3 py-2 space-y-0.5">
+                  {ogSection && (
+                    <p className="font-mono text-[9px] uppercase text-muted-foreground">{ogSection}</p>
+                  )}
+                  <p className="text-xs font-bold text-foreground leading-tight">{seoTitle || title || "Article Title"}</p>
+                  <p className="text-[10px] text-muted-foreground leading-snug line-clamp-2">{seoDesc || excerpt || "Article excerpt…"}</p>
+                  <p className="font-mono text-[9px] text-muted-foreground/60 uppercase">lonnex.dev</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
+
 
         {/* Save error */}
         {saveError && (
@@ -560,6 +674,32 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
             )}
           </button>
 
+          {slug && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleCopyPublicLink}
+                className="flex-1 flex items-center justify-center gap-1.5 border border-border bg-background text-muted-foreground py-2 font-mono text-xs uppercase hover:text-foreground hover:border-primary transition-colors cursor-pointer"
+                title="Copy public link to clipboard"
+              >
+                {copiedLink ? <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+                {copiedLink ? "Copied" : "Copy Link"}
+              </button>
+
+              {status === "published" && (
+                <a
+                  href={`/journal/${slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1 px-3 border border-border bg-background text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
+                  title="Open live article in new tab"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              )}
+            </div>
+          )}
+
           {mode === "edit" && articleId && (
             <button
               type="button"
@@ -589,5 +729,65 @@ export function JournalEditor({ mode, articleId, initialData, allTags, allSeries
         </div>
       </div>
     </div>
+
+      {/* ── Cover Image MediaPicker Modal ──────────────────────────────────── */}
+      {showCoverPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-background border border-border w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <p className="font-mono text-[10px] uppercase text-muted-foreground">Select cover image</p>
+              <button
+                type="button"
+                onClick={() => setShowCoverPicker(false)}
+                className="p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <MediaPicker
+              assets={mediaAssets.filter((a) => a.type === "image")}
+              filter="image"
+              onSelect={(selected) => {
+                if (selected[0]) {
+                  setCoverUrl(resolveMediaUrl(selected[0].publicId));
+                }
+                setShowCoverPicker(false);
+              }}
+              onClose={() => setShowCoverPicker(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Inline Image MediaPicker Modal ──────────────────────────────────── */}
+      {showInlineImagePicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-background border border-border w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <p className="font-mono text-[10px] uppercase text-muted-foreground">Insert photo into article</p>
+              <button
+                type="button"
+                onClick={() => setShowInlineImagePicker(false)}
+                className="p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <MediaPicker
+              assets={mediaAssets.filter((a) => a.type === "image")}
+              filter="image"
+              onSelect={(selected) => {
+                if (selected[0] && editor) {
+                  const url = resolveMediaUrl(selected[0].publicId);
+                  editor.chain().focus().setImage({ src: url, alt: selected[0].altText || "Article image" }).run();
+                }
+                setShowInlineImagePicker(false);
+              }}
+              onClose={() => setShowInlineImagePicker(false)}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

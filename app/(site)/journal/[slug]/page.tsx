@@ -27,12 +27,23 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const article = await getPublishedArticleBySlug(slug);
   if (!article) return {};
 
-  const settings = await getSiteSettings();
+  const [settings, profile] = await Promise.all([
+    getSiteSettings(),
+    getProfile(),
+  ]);
   const siteTitle = settings?.siteTitle || "Lonnex Njenga";
+  const authorName = profile?.name || "Lonnex Njenga";
 
   const seo = (article.seo as Record<string, string> | null) ?? {};
   const metaTitle = seo.title || `${article.title} | ${siteTitle}`;
   const metaDesc = seo.description || article.excerpt;
+
+  // Prefer explicit OG image from SEO settings, fall back to cover
+  const ogImage = seo.ogImageUrl || article.coverUrl || null;
+  // Use scheduled publish time if set, otherwise creation date
+  const publishedTime = article.publishAt
+    ? new Date(article.publishAt).toISOString()
+    : new Date(article.createdAt).toISOString();
 
   return {
     title: metaTitle,
@@ -41,16 +52,17 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       title: metaTitle,
       description: metaDesc,
       type: "article",
-      publishedTime: new Date(article.createdAt).toISOString(),
-      authors: ["Lonnex Njenga"],
+      publishedTime,
+      authors: [authorName],
       tags: article.tags.map((t) => t.name),
-      images: article.coverUrl ? [{ url: article.coverUrl }] : undefined,
+      section: seo.ogSection || undefined,
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: article.title }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: metaTitle,
       description: metaDesc,
-      images: article.coverUrl ? [article.coverUrl] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }
@@ -95,11 +107,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <span>Back to Journal</span>
             </Link>
 
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-mono text-muted-foreground hidden sm:inline">
-                Text Size:
-              </span>
-              <TextSizeControls />
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="text-[11px] font-mono text-muted-foreground">Share:</span>
+                <ArticleShareButtons title={article.title} slug={article.slug} compact />
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-mono text-muted-foreground hidden sm:inline">
+                  Text Size:
+                </span>
+                <TextSizeControls />
+              </div>
             </div>
           </div>
 
@@ -112,6 +130,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             {/* Center Column: 68ch Reading Room */}
             <article className="lg:col-span-9 max-w-[68ch] mx-auto w-full">
+              {/* Cover Hero Image */}
+              {article.coverUrl && (
+                <div className="relative w-full aspect-[2/1] overflow-hidden border border-border mb-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={article.coverUrl}
+                    alt={article.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
               {/* Header Strip */}
               <header className="relative overflow-hidden space-y-4 mb-10 pb-8 border-b border-border">
                 {/* Background geometric wireframe clusters with glowing dots */}

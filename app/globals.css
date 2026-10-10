@@ -70,7 +70,7 @@ body {
 /* ── Tiptap editor ─────────────────────────────────────────────────────────── */
 .tiptap-editor .ProseMirror {
   outline: none;
-  min-height: 16rem;
+  min-height: 100%;
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   line-height: 1.7;
@@ -164,6 +164,8 @@ body {
   max-width: 100%;
   height: auto;
   border: 1px solid var(--border);
+  margin: 1.5rem auto;
+  display: block;
 }
 
 /* Selected node highlight */

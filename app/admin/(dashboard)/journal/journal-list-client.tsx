@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, FileText, Tag, Layers, Trash2, Pencil, Upload, Clock, CheckCircle2, FileEdit } from "lucide-react";
+import { Plus, FileText, Tag, Layers, Trash2, Pencil, Upload, Clock, CheckCircle2, FileEdit, ExternalLink, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { deleteArticleAction, createTagAction, deleteTagAction, createSeriesAction, deleteSeriesAction } from "./actions";
 
@@ -65,6 +65,19 @@ export function JournalListClient({
   const [activeTab, setActiveTab] = React.useState<"articles" | "tags" | "series">("articles");
   const [deletingId, setDeletingId] = React.useState<number | null>(null);
   const [busy, setBusy] = React.useState(false);
+  const [copiedSlug, setCopiedSlug] = React.useState<string | null>(null);
+
+  const handleCopyLink = async (slug: string) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://lonnex.dev";
+    const url = `${origin}/journal/${slug}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedSlug(slug);
+      setTimeout(() => setCopiedSlug(null), 2000);
+    } catch {
+      // ignore
+    }
+  };
 
   // ── Import modal state ────────────────────────────────────────────────────
   const [showImport, setShowImport] = React.useState(false);
@@ -275,6 +288,34 @@ export function JournalListClient({
                 </div>
 
                 <div className="flex items-center gap-1.5 flex-shrink-0">
+                  {/* Copy Public Link */}
+                  <button
+                    type="button"
+                    onClick={() => handleCopyLink(article.slug)}
+                    className={cn(
+                      "p-1.5 border transition-colors cursor-pointer",
+                      copiedSlug === article.slug
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-primary"
+                    )}
+                    title={copiedSlug === article.slug ? "Copied!" : "Copy public share link"}
+                  >
+                    {copiedSlug === article.slug ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  </button>
+
+                  {/* View on Site (if published) */}
+                  {article.status === "published" && (
+                    <a
+                      href={`/journal/${article.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 border border-border bg-background text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
+                      title="View public article"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  )}
+
                   <Link
                     href={`/admin/journal/${article.id}`}
                     className="p-1.5 border border-border bg-background text-muted-foreground hover:text-foreground hover:border-primary transition-colors"

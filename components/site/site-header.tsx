@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { BrandLogoLockup } from "@/components/hex/brand-logo-lockup";
 import { ThemeToggle } from "@/components/hex/theme-toggle";
 import { RadialMenu } from "@/components/site/radial-menu";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { cn } from "@/lib/utils";
-
-/** Taps required and time window (ms) to trigger the secret admin route. */
-const SECRET_TAPS = 5;
-const SECRET_WINDOW_MS = 2000;
 
 interface SiteHeaderProps {
   availabilityStatus?: "available" | "limited" | "booked";
@@ -46,37 +41,13 @@ export function SiteHeader({
   navLabels = {},
 }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const router = useRouter();
-
-  // ── Secret admin tap sequence ──────────────────────────────────────────────
-  // Tap the logo 5× within 2 s to navigate to /admin.
-  // Zero visual feedback — completely invisible to visitors.
-  const tapCountRef = useRef(0);
-  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleLogoTap = useCallback(() => {
-    tapCountRef.current += 1;
-
-    // Reset the sliding window
-    if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
-    tapTimerRef.current = setTimeout(() => {
-      tapCountRef.current = 0;
-    }, SECRET_WINDOW_MS);
-
-    if (tapCountRef.current >= SECRET_TAPS) {
-      tapCountRef.current = 0;
-      if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
-      router.push("/admin");
-    }
-  }, [router]);
-  // ──────────────────────────────────────────────────────────────────────────
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Logo — also a secret 5-tap admin shortcut */}
-          <Link href="/" aria-label="Home" className="flex-shrink-0" onClick={handleLogoTap}>
+          {/* Logo */}
+          <Link href="/" aria-label="Home" className="flex-shrink-0">
             <BrandLogoLockup className="h-7" />
           </Link>
 
@@ -106,6 +77,16 @@ export function SiteHeader({
               />
               <span className="hidden lg:inline">{availabilityStatus}</span>
             </Link>
+
+            {/* Command palette search trigger (accessible on mobile & PWA) */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("open-command-palette"))}
+              aria-label="Open command palette (Ctrl+K)"
+              className="flex items-center justify-center h-8 w-8 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+            >
+              <Search className="h-4 w-4" />
+            </button>
 
             <ThemeToggle />
 

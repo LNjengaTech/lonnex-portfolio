@@ -62,7 +62,7 @@ export function CommandPalette({ projects = [], articles = [] }: CommandPaletteP
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Cmd/Ctrl + K to open
+  // Cmd/Ctrl + K to open, and custom event for mobile/touch triggers
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -70,8 +70,14 @@ export function CommandPalette({ projects = [], articles = [] }: CommandPaletteP
         setOpen((o) => !o);
       }
     };
+    const openHandler = () => setOpen(true);
+
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("open-command-palette", openHandler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      window.removeEventListener("open-command-palette", openHandler);
+    };
   }, []);
 
   // Focus input on open

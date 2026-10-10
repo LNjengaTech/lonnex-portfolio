@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 
@@ -31,6 +31,14 @@ interface RadialMenuProps {
 
 export function RadialMenu({ open, onClose }: RadialMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
+
+  const triggerCommandPalette = () => {
+    onClose();
+    // Dispatch after next paint so menu unmounts cleanly first
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("open-command-palette"));
+    }, 50);
+  };
 
   // Close on Escape
   useEffect(() => {
@@ -118,22 +126,38 @@ export function RadialMenu({ open, onClose }: RadialMenuProps) {
         })}
       </div>
 
-      {/* Mobile: full-list fallback below the radial (accessible & fast-tap) */}
-      <nav
-        className="absolute bottom-5 left-0 right-0 flex flex-wrap justify-center gap-x-4 gap-y-2 px-4 sm:hidden z-10"
-        aria-label="Navigation"
-      >
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onClose}
-            className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground active:text-primary transition-colors py-1 px-1.5"
-          >
-            {item.number}. {item.label}
-          </Link>
-        ))}
-      </nav>
+      {/* Bottom controls: Command bar button + Mobile room list */}
+      <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-3 px-4 z-10">
+        {/* Command palette / Quick search button */}
+        <button
+          onClick={triggerCommandPalette}
+          className="flex items-center gap-2 border border-border/70 bg-surface/90 backdrop-blur-sm px-3.5 py-1.5 rounded-none text-muted-foreground hover:text-foreground hover:border-primary transition-all text-xs font-mono shadow-sm"
+          aria-label="Open command palette"
+        >
+          <Search className="h-3.5 w-3.5 text-primary" />
+          <span className="uppercase tracking-wider text-[11px]">Command Palette</span>
+          <kbd className="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] bg-background border border-border font-mono text-muted-foreground">
+            ⌘K
+          </kbd>
+        </button>
+
+        {/* Mobile: full-list fallback below the radial */}
+        <nav
+          className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 sm:hidden"
+          aria-label="Navigation"
+        >
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground active:text-primary transition-colors py-0.5 px-1.5"
+            >
+              {item.number}. {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </div>
   );
 }

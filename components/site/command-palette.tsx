@@ -21,7 +21,11 @@ import {
   Moon,
   Monitor,
   Hash,
+  ShieldAlert,
 } from "lucide-react";
+
+/** Secret passphrase that unlocks the admin command in the palette. */
+const ADMIN_PASSPHRASE = ">hive";
 
 // Static nav commands — rooms don't change at runtime
 const NAV_COMMANDS = [
@@ -105,9 +109,13 @@ export function CommandPalette({ projects = [], articles = [] }: CommandPaletteP
   const filteredProjects = projects.filter((p) => p.label.toLowerCase().includes(q));
   const filteredArticles = articles.filter((a) => a.label.toLowerCase().includes(q));
 
+  // Secret: only visible when the exact passphrase is typed
+  const showAdminCommand = query.toLowerCase() === ADMIN_PASSPHRASE;
+
   const isEmpty =
     !filteredNav.length && !filteredTheme.length &&
-    !filteredProjects.length && !filteredArticles.length;
+    !filteredProjects.length && !filteredArticles.length &&
+    !showAdminCommand;
 
   if (!open) return null;
 
@@ -182,6 +190,19 @@ export function CommandPalette({ projects = [], articles = [] }: CommandPaletteP
                     {cmd.label}
                   </CommandItem>
                 ))}
+              </CommandGroup>
+            )}
+
+            {/* ── Secret admin command — only surfaces for passphrase ">hive" ── */}
+            {showAdminCommand && (
+              <CommandGroup heading="⬡ The Hive">
+                <CommandItem
+                  onSelect={() => navigate("/admin")}
+                  className="text-primary"
+                >
+                  <ShieldAlert className="mr-2 h-4 w-4 text-primary" />
+                  Enter The Hive
+                </CommandItem>
               </CommandGroup>
             )}
           </CommandList>

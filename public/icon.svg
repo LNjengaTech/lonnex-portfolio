@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 115.47" width="32" height="32">
+  <!-- Outer hex — brand navy background -->
+  <polygon points="50,0 100,28.87 100,86.6 50,115.47 0,86.6 0,28.87" fill="#0B0F17"/>
+  <!-- Inner hex — brand blue -->
+  <polygon points="50,18 84,36.5 84,79 50,97.47 16,79 16,36.5" fill="#0066FF"/>
+  <!-- Tiny center hex accent — white -->
+  <polygon points="50,38 67,47.74 67,67.26 50,77 33,67.26 33,47.74" fill="#FFFFFF" opacity="0.15"/>
+  <!-- LN monogram — white -->
+  <text
+    x="50"
+    y="72"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="30"
+    font-weight="700"
+    fill="#FFFFFF"
+    letter-spacing="-1"
+  >LN</text>
+</svg>

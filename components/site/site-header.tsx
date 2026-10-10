@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { BrandLogoLockup } from "@/components/hex/brand-logo-lockup";
 import { ThemeToggle } from "@/components/hex/theme-toggle";
 import { RadialMenu } from "@/components/site/radial-menu";
 import { HEX_CLIP_PATH } from "@/lib/hex";
 import { cn } from "@/lib/utils";
+
+/** Taps required and time window (ms) to trigger the secret admin route. */
+const SECRET_TAPS = 5;
+const SECRET_WINDOW_MS = 2000;
 
 interface SiteHeaderProps {
   availabilityStatus?: "available" | "limited" | "booked";
@@ -41,13 +46,37 @@ export function SiteHeader({
   navLabels = {},
 }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+
+  // ── Secret admin tap sequence ──────────────────────────────────────────────
+  // Tap the logo 5× within 2 s to navigate to /admin.
+  // Zero visual feedback — completely invisible to visitors.
+  const tapCountRef = useRef(0);
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleLogoTap = useCallback(() => {
+    tapCountRef.current += 1;
+
+    // Reset the sliding window
+    if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+    tapTimerRef.current = setTimeout(() => {
+      tapCountRef.current = 0;
+    }, SECRET_WINDOW_MS);
+
+    if (tapCountRef.current >= SECRET_TAPS) {
+      tapCountRef.current = 0;
+      if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+      router.push("/admin");
+    }
+  }, [router]);
+  // ──────────────────────────────────────────────────────────────────────────
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Logo */}
-          <Link href="/" aria-label="Home" className="flex-shrink-0">
+          {/* Logo — also a secret 5-tap admin shortcut */}
+          <Link href="/" aria-label="Home" className="flex-shrink-0" onClick={handleLogoTap}>
             <BrandLogoLockup className="h-7" />
           </Link>
 
